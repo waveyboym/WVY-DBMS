@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>WVY DBMS</title>
+</head>
+<body>
+    <div class="main-app-container">
+        <div class="app-controls">
+            <div class="minimize-app" onmouseup="minimizewindow()">
+                <img src="assets/squircle-gray.svg" alt="gray-squircle" class="gray-squircle"/>
+                <img src="assets/minimize-window.svg" alt="minimizewindow" class="minimize-window"/>
+            </div>
+            <div class="close-app" id="close-app-btn" onmouseup="closewindow()">
+                <img src="assets/squircle-red.svg" alt="red-squircle" class="red-squircle"/>
+                <img src="assets/close-window.svg" alt="closewindow" class="close-window"/>
+            </div>
+        </div>
+        <div class="navigation-side-bar">
+            <div class="app-title-block">
+                <div class="app-icon-container">
+                    <img src="assets/app-icon.svg" alt="appicon"/>
+                </div>
+                <h2>WVY<br>DBMS</h2>
+            </div>
+            <div class="app-navigation-bar">
+                <div class="navigation-tab dashboard-tab selected-navigation-tab" onmouseup="changeSelectedTab('.dashboard-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.4667 2.39996C20.6449 2.39996 21.6 3.34201 21.6 4.50407L21.6 8.0959C21.6 9.25796 20.6449 10.2 19.4667 10.2H16.2667C15.0885 10.2 14.1334 9.25796 14.1334 8.09589L14.1334 4.50407C14.1334 3.34201 15.0885 2.39996 16.2667 2.39996L19.4667 2.39996Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4.53336 2.39996C3.35515 2.39996 2.40002 3.34201 2.40002 4.50407L2.40003 8.0959C2.40003 9.25796 3.35516 10.2 4.53337 10.2H7.73337C8.91157 10.2 9.8667 9.25796 9.8667 8.09589L9.86669 4.50407C9.86669 3.34201 8.91156 2.39996 7.73336 2.39996L4.53336 2.39996Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M19.4667 13.8C20.6449 13.8 21.6 14.742 21.6 15.9041V19.4959C21.6 20.658 20.6449 21.6 19.4667 21.6H16.2667C15.0885 21.6 14.1334 20.658 14.1334 19.4959L14.1334 15.9041C14.1334 14.742 15.0885 13.8 16.2667 13.8H19.4667Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M4.53337 13.8C3.35516 13.8 2.40003 14.742 2.40003 15.9041L2.40004 19.4959C2.40004 20.658 3.35516 21.6 4.53337 21.6H7.73337C8.91157 21.6 9.8667 20.658 9.8667 19.4959L9.8667 15.9041C9.8667 14.742 8.91157 13.8 7.73336 13.8H4.53337Z" stroke="#323232" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <h2>Dashboard</h2>
+                </div>
+                <div class="navigation-tab staff-tab" onmouseup="changeSelectedTab('.staff-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16.0254 20.5707L16.0257 17.3569C16.0259 15.5818 14.5869 14.1426 12.8117 14.1426H5.61444C3.83951 14.1426 2.40059 15.5814 2.40039 17.3563L2.40002 20.5707M21.5997 20.5709L21.6 17.3571C21.6002 15.5819 20.1612 14.1428 18.386 14.1428M15.4064 4.06048C16.1957 4.64612 16.7072 5.58498 16.7072 6.64331C16.7072 7.70164 16.1957 8.64049 15.4064 9.22613M12.4938 6.64313C12.4938 8.41821 11.0548 9.85719 9.27977 9.85719C7.50469 9.85719 6.06571 8.41821 6.06571 6.64313C6.06571 4.86806 7.50469 3.42908 9.27977 3.42908C11.0548 3.42908 12.4938 4.86806 12.4938 6.64313Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                        
+                    <h2>Staff</h2>
+                </div>
+                <div class="navigation-tab films-tab" onmouseup="changeSelectedTab('.films-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7.20002 21V2.99996M16.8 21V2.99996M2.40002 12H21.6M2.40002 7.19996H7.20002M16.8 7.19996H21.6M2.40002 16.8H7.20002M16.8 16.8H21.6M2.40002 18.0001L2.40003 5.99996C2.40003 4.01174 4.0118 2.39996 6.00003 2.39996L18 2.39996C19.9883 2.39996 21.6 4.01174 21.6 5.99996V18.0001C21.6 19.9883 19.9882 21.6001 18 21.6001H6.00002C4.0118 21.6001 2.40002 19.9883 2.40002 18.0001Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                    
+                    <h2>Films</h2>
+                </div>
+                <div class="navigation-tab report-tab" onmouseup="changeSelectedTab('.report-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.4002 7.20002H15.6002M8.4002 10.8H15.6002M8.4002 14.4H12.0002M6.59992 2.40002H17.4001C18.7256 2.40002 19.8002 3.47457 19.8001 4.80007L19.7999 19.2001C19.7998 20.5255 18.7253 21.6 17.3999 21.6L6.59982 21.6C5.27433 21.6 4.19982 20.5254 4.19983 19.2L4.19992 4.80001C4.19993 3.47453 5.27444 2.40002 6.59992 2.40002Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                                          
+                    <h2>Report</h2>
+                </div>
+                <div class="navigation-tab notifications-tab" onmouseup="changeSelectedTab('.notifications-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.599 12.6C22.599 12.0477 22.1513 11.6 21.599 11.6C21.0468 11.6 20.599 12.0477 20.599 12.6H22.599ZM20.7836 16.4779L19.869 16.0736C19.7932 16.2449 19.7671 16.434 19.7936 16.6194L20.7836 16.4779ZM16.6979 20.9733L16.9405 20.0032C16.6926 19.9412 16.4304 19.9765 16.2078 20.1017L16.6979 20.9733ZM21.6009 22.1991L21.3583 23.1692C21.6813 23.25 22.0234 23.1647 22.2706 22.9417C22.5179 22.7187 22.6379 22.3873 22.5908 22.0577L21.6009 22.1991ZM10.3854 4.15094C10.928 4.04801 11.2845 3.5247 11.1815 2.98209C11.0786 2.43948 10.5553 2.08305 10.0127 2.18598L10.3854 4.15094ZM20.599 12.6C20.599 13.8381 20.338 15.0126 19.869 16.0736L21.6982 16.8823C22.2777 15.5715 22.599 14.1219 22.599 12.6H20.599ZM11.999 21.2C7.2494 21.2 3.39905 17.3496 3.39905 12.6H1.39905C1.39905 18.4542 6.14483 23.2 11.999 23.2V21.2ZM16.2078 20.1017C14.9646 20.8009 13.5299 21.2 11.999 21.2V23.2C13.8822 23.2 15.6534 22.7081 17.1881 21.845L16.2078 20.1017ZM21.8434 21.2289L16.9405 20.0032L16.4554 21.9435L21.3583 23.1692L21.8434 21.2289ZM19.7936 16.6194L20.6109 22.3405L22.5908 22.0577L21.7735 16.3365L19.7936 16.6194ZM3.39905 12.6C3.39905 8.40259 6.40709 4.9056 10.3854 4.15094L10.0127 2.18598C5.10791 3.11638 1.39905 7.42399 1.39905 12.6H3.39905ZM20.599 5.39999C20.599 6.83593 19.435 7.99999 17.999 7.99999V9.99999C20.5396 9.99999 22.599 7.9405 22.599 5.39999H20.599ZM17.999 7.99999C16.5631 7.99999 15.399 6.83593 15.399 5.39999H13.399C13.399 7.9405 15.4585 9.99999 17.999 9.99999V7.99999ZM15.399 5.39999C15.399 3.96405 16.5631 2.79999 17.999 2.79999V0.799988C15.4585 0.799988 13.399 2.85948 13.399 5.39999H15.399ZM17.999 2.79999C19.435 2.79999 20.599 3.96405 20.599 5.39999H22.599C22.599 2.85948 20.5396 0.799988 17.999 0.799988V2.79999Z" fill="white"/>
+                    </svg>                                   
+                    <h2>Notifications</h2>
+                </div>
+                <div class="navigation-tab about-tab" onmouseup="changeSelectedTab('.about-tab')">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11.999 16.8V16.8422M9.60002 9.04535C9.60002 7.69483 10.6745 6.60002 12 6.60002C13.3255 6.60002 14.4 7.69483 14.4 9.04535C14.4 10.3959 13.3255 11.4907 12 11.4907C12 11.4907 11.999 12.2206 11.999 13.1209M21.6 12C21.6 17.302 17.302 21.6 12 21.6C6.69809 21.6 2.40002 17.302 2.40002 12C2.40002 6.69809 6.69809 2.40002 12 2.40002C17.302 2.40002 21.6 6.69809 21.6 12Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                                  
+                    <h2>About</h2>
+                </div>
+            </div>
+        </div>
+        <div class="main-app"></div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
