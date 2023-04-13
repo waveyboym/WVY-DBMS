@@ -54,15 +54,24 @@ public class Database {
         catch(Exception e){ System.out.println("Error: Database.java:54 : " + e.getMessage());}
     }
 
+    public void setIntValues(int Index, int value){
+        if(conn == null)return;
+        try{
+            if(query == null)throw new Exception("NullPointerException: Database.java:60(query is null)");
+            query.setInt(Index, value);
+        }
+        catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
+    }
+
     public ResultSet getResults(){
         if(conn == null)return null;
         try{ResultSet result = query.executeQuery(); return result;}
-        catch(Exception e){ System.out.println("Error: Database.java:60 : " + e.getMessage()); return null;}
+        catch(Exception e){ System.out.println("Error: Database.java:69 : " + e.getMessage()); return null;}
     }
 
     public boolean ExecuteUpdate(){
         if(conn == null)return false;
         try{query.executeUpdate(); return true;}
-        catch(Exception e){ System.out.println("Error: Database.java:66 : "  +e.getMessage()); return false;}
+        catch(Exception e){ System.out.println("Error: Database.java:75 : "  +e.getMessage()); return false;}
     }
 }

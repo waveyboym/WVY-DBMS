@@ -4,7 +4,7 @@ module org.openjfx {
     requires javafx.fxml;
     requires jdk.jsobject;
     requires transitive java.sql;
-    //requires json.simple;
+    requires json.simple;
 
     opens org.openjfx to javafx.fxml;
     exports org.openjfx;

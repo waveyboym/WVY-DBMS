@@ -29,6 +29,36 @@ public class Interfaceapi {
 
     public void fillFilmTab(){this.webEngine.executeScript("selectFilmsTabUI('"+ DatabaseManager.getAllFilms() +"')");}
 
-    //public void addFilm(){}
+    public void addFilm(){//NNN
+        String jsonData = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        DatabaseManager.AddNewFilm(jsonData);
+    }
+
+    public void getAllRecords(){this.webEngine.executeScript("selectReportTabUI('"+ DatabaseManager.getRecords() +"')");}
+
+    public void selectClientsTab(){this.webEngine.executeScript("selectNotificationTabUI()"); this.fillClientsTab();}
+
+    public void fillClientsTab(){this.webEngine.executeScript("selectNotificationALLCLIENTS('"+ DatabaseManager.getAllClients() +"')");}
+
+    public void droppedRentalSub(){this.webEngine.executeScript("selectNotificationDROPPEDRENTAL('"+ DatabaseManager.droppedRentalSub() +"')");}
+
+    public void deleteClient(){
+        String id = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        DatabaseManager.deleteClient(Integer.parseInt(id));
+    }
+
+    public void addClient(){//NNN
+
+    }
+
+    public void updateClient(){//NNN
+        String jsonData = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        DatabaseManager.updateClient(jsonData);
+    }
+
+    public void searchForClient(){
+        String staffAttribute = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        this.webEngine.executeScript("selectNotificationALLCLIENTS('"+ DatabaseManager.searchForClient(staffAttribute) +"')");
+    }
 
 }
