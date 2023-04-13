@@ -934,7 +934,7 @@ NOTIFICATIONS     U    I
 }
 
 .notifications-tab-heading input[type="text"]{
-    width: 322px;
+    width: 272px;
     border: none;
     outline: none;
     background: var(--gray-680-30);
@@ -950,20 +950,23 @@ NOTIFICATIONS     U    I
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
     user-select: text; 
+    margin-right: 5px;
 }
 
-.add-client-btn{
+.add-client-btn, .search-client-btn{
     width: 40px;
     height: 40px;
     flex-shrink: 0;
     transition: transform 0.1s ease-in-out;
 }
 
-.add-client-btn:hover{transform: scale(1.03);}
+.search-client-btn{margin-right: 5px;}
 
-.add-client-btn:active{transform: scale(0.97);}
+.add-client-btn:hover, .search-client-btn:hover{transform: scale(1.03);}
 
-.add-client-btn img{
+.add-client-btn:active, .search-client-btn:active{transform: scale(0.97);}
+
+.add-client-btn img, .search-client-btn img{
     width: 100%;
     height: 100%;
 }

@@ -24,8 +24,8 @@ const changeSelectedTab = function(classToSelect){
     if(classToSelect === ".dashboard-tab")InterfaceAPIOBJ.fillDashBoard();
     else if(classToSelect === ".staff-tab")InterfaceAPIOBJ.fillStaffTab();
     else if(classToSelect === ".films-tab")InterfaceAPIOBJ.fillFilmTab();
-    else if(classToSelect == ".report-tab")selectReportTabUI();
-    else if(classToSelect == ".notifications-tab")selectNotificationTabUI();
+    else if(classToSelect == ".report-tab")InterfaceAPIOBJ.getAllRecords();
+    else if(classToSelect == ".notifications-tab")InterfaceAPIOBJ.selectClientsTab();
     else if(classToSelect == ".about-tab")selectAboutTabUI();
     else cleanUI();
 }
@@ -139,12 +139,9 @@ const populateStaffTab = function(jsonData){
     const stafftabresults = document.querySelector(".staff-tab-results");
     if(stafftabresults == null)return;
     
-    if(StaffUI__JSONDATA.staff.length === 0){
-        stafftabresults.innerHTML = "<h2 class='staff-tab-results'>no results found in database</h2>";
-        return;
-    }
     stafftabresults.innerHTML = "";
-
+    if(StaffUI__JSONDATA.staff.length === 0)stafftabresults.innerHTML = "<h2 class='staff-tab-results'>no results found in database</h2>";
+    
     for(let i = 0; i < StaffUI__JSONDATA.staff.length; ++i){
         stafftabresults.innerHTML += '<div class="staff-element">' +
                                         '<h3 class="firstname">'+ StaffUI__JSONDATA.staff[i].first_name+'</h3>' +
@@ -199,11 +196,8 @@ const populateFilmTab = function(jsonData){
     const filmsresults = document.querySelector(".films-results");
     if(filmsresults == null)return;
 
-    if(FilmsUI__JSONDATA.films.length === 0){
-        filmsresults.innerHTML = "<h2 class='film-tab-results'>no results found in database</h2>";
-        return;
-    }
     filmsresults.innerHTML = "";
+    if(FilmsUI__JSONDATA.films.length === 0)filmsresults.innerHTML = "<h2 class='film-tab-results'>no results found in database</h2>";
 
     for(let i = 0; i < FilmsUI__JSONDATA.films.length; ++i){
         filmsresults.innerHTML += '<div class="film-element">' +
@@ -238,13 +232,13 @@ const getImg = function(){
 
 
 
-const selectReportTabUI = function(){
+const selectReportTabUI = function(jsonData){
     const mainApp = document.querySelector(".main-app");
     mainApp.innerHTML = '<div class="report-tab-ui">' +
                     '<div class="report-tab-header">' +
                         '<div class="report-tab-main-header">' +
                             '<h2>report</h2>' +
-                            '<div class="download-btn">' +
+                            '<div class="download-btn" onmouseup="downloadReportAsPDF()">' +
                                 '<img src="assets/download.svg" alt="download"/>' +
                             '</div>' +
                         '</div>' +
@@ -254,14 +248,48 @@ const selectReportTabUI = function(){
                             '<h4>number of movies</h4>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="report-tab-results">' +
-                        '<div class="report-tab-element">' +
-                            '<h2>Lorem ipsem doe rosje shue euihe euhgtfe ruuudg shhhsv d</h2>' +
-                            '<h3>horror</h3>' +
-                            '<h4>34400</h4>' +
-                        '</div>' +
-                    '</div>' +
+                    '<div class="report-tab-results"></div>' +
                 '</div>';
+
+    populateReportTab(jsonData);
+}
+
+const populateReportTab = function(jsonData){
+    const Report__JSONDATA = JSON.parse(jsonData);
+    const reportresults = document.querySelector(".report-tab-results");
+    if(reportresults == null)return;
+
+    reportresults.innerHTML = "";
+    if(Report__JSONDATA.records.length === 0)reportresults.innerHTML = "<h2 class='report-tab-results'>no results found in database</h2>";
+
+    for(let i = 0; i < Report__JSONDATA.records.length; ++i){
+        reportresults.innerHTML += '<div class="report-tab-element">' +
+                                        '<h2>'+ Report__JSONDATA.records[i].workplaceAddress +'</h2>' +
+                                        '<h3>'+ Report__JSONDATA.records[i].genre +'</h3>' +
+                                        '<h4>'+ Report__JSONDATA.records[i].count +'</h4>' +
+                                    '</div>';
+    }
+}
+
+const downloadReportAsPDF = function(){
+    //fill later
+}
+
+
+
+
+
+
+const selectAllClients = function(){
+    const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
+    if(selectedSubTab != null && selectedSubTab.classList.contains("dropped-rental"))return;
+    InterfaceAPIOBJ.fillClientsTab();
+}
+
+const selectDroppedSub = function(){
+    const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
+    if(selectedSubTab != null && selectedSubTab.classList.contains("dropped-rental"))return;
+    InterfaceAPIOBJ.droppedRentalSub();
 }
 
 const selectNotificationTabUI = function(){
@@ -269,9 +297,12 @@ const selectNotificationTabUI = function(){
     mainApp.innerHTML = '<div class="notifications-tab-ui">' +
                             '<div class="notifications-tab-heading">' +
                                 '<h2>notifications</h2>' +
-                                '<h3 class="all-clients notifications-tab-currently-selected" onmouseup="selectNotificationALLCLIENTS(false)">all clients</h3>' +
-                                '<h3 class="dropped-rental" onmouseup="selectNotificationDROPPEDRENTAL()">dropped rental</h3>' +
-                                '<input type="text" placeholder="Search for attribute..."/>' +
+                                '<h3 class="all-clients" onmouseup="selectAllClients()">all clients</h3>' +
+                                '<h3 class="dropped-rental" onmouseup="selectDroppedSub()">dropped rental</h3>' +
+                                '<input type="text" placeholder="Search for attribute..." id="clientSearchAttribute"/>' +
+                                '<div class="search-client-btn" onmouseup="searchClient()">' +
+                                    '<img src="assets/search.svg" alt="search-client-btn"/>' +
+                                '</div>' +
                                 '<div class="add-client-btn" onmouseup="openAddClient()">' +
                                     '<img src="assets/add-data.svg" alt="add-client-btn"/>' +
                                 '</div>' +
@@ -334,66 +365,78 @@ const selectNotificationTabUI = function(){
                                 '</div>' +
                             '</div>' +
                         '</div>';
-    selectNotificationALLCLIENTS(true);
 }
 
-const selectNotificationALLCLIENTS = function(overRideReturn){
+const selectNotificationALLCLIENTS = function(jsonData){
     const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
     const thisSubTab = document.querySelector(".all-clients");
     const resultsDiv = document.querySelector(".notifications-tab-results");
     
-    if(thisSubTab == null || selectedSubTab == null || resultsDiv == null)return;
-    if(thisSubTab.classList.contains("notifications-tab-currently-selected") && !overRideReturn)return;
-    selectedSubTab.classList.remove("notifications-tab-currently-selected");
-    thisSubTab.classList.add("notifications-tab-currently-selected");
+    if(resultsDiv == null)return;
+    if(selectedSubTab != null)selectedSubTab.classList.remove("notifications-tab-currently-selected");
+    if(thisSubTab != null)thisSubTab.classList.add("notifications-tab-currently-selected");
 
     resultsDiv.innerHTML = "";
+    const Clients__JSONDATA = JSON.parse(jsonData);
+    if(Clients__JSONDATA.clients.length === 0)filmsresults.innerHTML = "<h2 class='all-clients-results'>no results found in database</h2>";
 
-    resultsDiv.innerHTML += '<div class="client-element" id="client1">' +
-                                '<div class="client-details">' +
-                                    '<h2>Name: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Surname: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Email: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Active status: active</h2>' +
-                                '</div>' +
-                                '<div class="client-methods">' +
-                                    '<div class="edit-client-btn" onmouseup="openEditClient(\'client1\')">' +
-                                        '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+    for(let i = 0; i < Clients__JSONDATA.clients.length; ++i){
+        resultsDiv.innerHTML += '<div class="client-element" id="'+ Clients__JSONDATA.clients[i].customer_id +'">' +
+                                    '<div class="client-details">' +
+                                        '<h2>Name: '+ Clients__JSONDATA.clients[i].first_name +'</h2>' +
+                                        '<h2>Surname: '+ Clients__JSONDATA.clients[i].last_name +'</h2>' +
+                                        '<h2>Email: '+ Clients__JSONDATA.clients[i].email +'</h2>' +
+                                        '<h2>Active status: '+ clientActiveStatus(Clients__JSONDATA.clients[i].active) +'</h2>' +
                                     '</div>' +
-                                    '<div class="delete-client-btn" onmouseup="deleteClient(\'client1\')">' +
-                                        '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                                    '<div class="client-methods">' +
+                                        '<div class="edit-client-btn" onmouseup="openEditClient(\''+ Clients__JSONDATA.clients[i].customer_id +'\')">' +
+                                            '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+                                        '</div>' +
+                                        '<div class="delete-client-btn" onmouseup="deleteClient(\''+ Clients__JSONDATA.clients[i].customer_id +'\')">' +
+                                            '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                                        '</div>' +
                                     '</div>' +
-                                '</div>' +
-                            '</div>';
+                                '</div>';
+    }
 }
 
-const selectNotificationDROPPEDRENTAL = function(){
+const selectNotificationDROPPEDRENTAL = function(jsonData){
     const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
     const thisSubTab = document.querySelector(".dropped-rental");
     const resultsDiv = document.querySelector(".notifications-tab-results");
 
-    if(thisSubTab == null || selectedSubTab == null || resultsDiv == null)return;
-    if(thisSubTab.classList.contains("notifications-tab-currently-selected"))return;
-    selectedSubTab.classList.remove("notifications-tab-currently-selected");
-    thisSubTab.classList.add("notifications-tab-currently-selected");
+    if(resultsDiv == null)return;
+    if(selectedSubTab != null)selectedSubTab.classList.remove("notifications-tab-currently-selected");
+    if(thisSubTab != null)thisSubTab.classList.add("notifications-tab-currently-selected");
 
     resultsDiv.innerHTML = "";
-
+    const Clients__JSONDATA = JSON.parse(jsonData);
+    
     resultsDiv.innerHTML += '<div class="dropped-rental-sub-headers">' +
-                                '<h2>name</h2>' +
-                                '<h2>surname</h2>' +
-                                '<h3>email</h3>' +
-                                '<h2>active status</h2>' +
-                            '</div>' +
-                            '<div class="dropped-rental-sub-results">' +
-                                '<div class="dropped-rental-sub-element">' +
-                                    '<h2>wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h3>wufug efewbire bweiiheuiw whuweui</h3>' +
-                                    '<h4>wufug efewbire bweiiheuiw whuweui</h4>' +
-                                    '<h5>active</h5>' +
+                                    '<h2>name</h2>' +
+                                    '<h2>surname</h2>' +
+                                    '<h3>email</h3>' +
+                                    '<h2>active status</h2>' +
                                 '</div>' +
-                            '</div>';
+                                '<div class="dropped-rental-sub-results"></div>';
+    const rentalresultsDiv = document.querySelector(".dropped-rental-sub-results");
+    if(rentalresultsDiv == null)return;
+
+    if(Clients__JSONDATA.clients.length === 0)rentalresultsDiv.innerHTML = "<h2 class='dropped-rental-clients-results'>no results found in database</h2>";
+
+    for(let i = 0; i < Clients__JSONDATA.clients.length; ++i){
+        rentalresultsDiv.innerHTML += '<div class="dropped-rental-sub-element">' +
+                                        '<h2>'+ Clients__JSONDATA.clients[i].first_name +'</h2>' +
+                                        '<h3>'+ Clients__JSONDATA.clients[i].last_name +'</h3>' +
+                                        '<h4>'+ Clients__JSONDATA.clients[i].email +'</h4>' +
+                                        '<h5>'+ clientActiveStatus(Clients__JSONDATA.clients[i].active) +'</h5>' +
+                                    '</div>';
+    }
 }
+
+
+
+
 
 const selectAboutTabUI = function(){
     const mainApp = document.querySelector(".main-app");
@@ -409,6 +452,10 @@ const selectAboutTabUI = function(){
                 '</div>';
 }
 
+
+
+
+
 const openAddFilm = function(){
     if(document.querySelector(".add-new-film-form"))
         document.querySelector(".add-new-film-form").style.display = "block";
@@ -418,6 +465,15 @@ const closeAddfilm = function(){
     if(document.querySelector(".add-new-film-form"))
         document.querySelector(".add-new-film-form").style.display = "none";
 }
+
+const addNewFilm = function(){
+
+}
+
+
+
+
+
 
 const openAddClient = function(){
     if(document.querySelector(".notifications-tab-add-client-dialogue"))
@@ -441,11 +497,34 @@ const closeEditClient = function(){
     currentlyEditingClientID = "";
 }
 
+
+
+
 const deleteClient = function(id){
     const clientEl = document.getElementById(id);
     if(clientEl != null)clientEl.remove();
 
-    //perform backend delete;
+    JAVA__READABLE__TEXT = id;
+    InterfaceAPIOBJ.deleteClient();
 }
+
+const addNewClientToDatabase = function(){
+    return false;
+    //perform backend ADD;
+}
+
+const upDateClientDataDatabase = function(){
+    return false;
+    //perform backend UPDATE;
+}
+
+const searchClient = function(){
+    JAVA__READABLE__TEXT = document.getElementById("clientSearchAttribute").value;
+    InterfaceAPIOBJ.searchForClient();
+}
+
+
+
+
 
 const cleanUI = function(){document.querySelector(".main-app").innerHTML = "";}
