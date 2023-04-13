@@ -9,7 +9,7 @@ A movie database application with HTML, CSS and Javascript as the frontend, and 
 5. Although this app makes use of JAVAFX, I never used native functionality to design the app but rather embeded a web app into the webview. I made this decision because of time constraints.
 
 # Presentation images
-![all tabs](presentation-img/demo.png "all tabs")
+![all tabs](presentation-img/demo1.png "all tabs")
 \
 \
 \
