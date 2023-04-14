@@ -186,7 +186,62 @@ const selectFilmsTabUI = function(jsonData){
                             '<div class="close-add-films-btn" onmouseup="closeAddfilm()">' +
                                 '<img src="assets/close-add-film.svg" alt="close-add-films"/>' +
                             '</div>' +
-                            '<div class="add-film-form"></div>' +
+                            '<div class="add-film-form">'+
+                                '<form action="" onsubmit="return addNewFilm()">' +
+                                            '<div class="add-film-form-inputs-container">' +
+                                                '<div>' +
+                                                    '<label for="film_title">title</label>' +
+                                                    '<input name="film_title" type="text" id="film_title" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_genre">genre</label>' +
+                                                    '<input name="film_genre" type="text" id="film_genre" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_language">language</label>' +
+                                                    '<input name="film_language" type="text" id="film_language" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_release_year">release year</label>' +
+                                                    '<input name="film_release_year" type="text" id="film_release_year" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_rental_duration">rental duration</label>' +
+                                                    '<input name="film_rental_duration" type="text" id="film_rental_duration" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_rental_rate">rental rate</label>' +
+                                                    '<input name="film_rental_rate" type="text" id="film_rental_rate" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_length">length</label>' +
+                                                    '<input name="film_length" type="text" id="film_length" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_replacement_cost">replacement cost</label>' +
+                                                    '<input name="film_replacement_cost" type="text" id="film_replacement_cost" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_rating">rating</label>' +
+                                                    '<input name="film_rating" type="text" id="film_rating" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_special_features">special features</label>' +
+                                                    '<input name="film_special_features" type="text" id="film_special_features" required/>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_description">description</label>' +
+                                                    '<textarea name="film_description" id="film_description" required></textarea>' +
+                                                '</div>' +
+                                                '<div>' +
+                                                    '<label for="film_full_text">full text</label>' +
+                                                    '<textarea name="film_full_text" id="film_full_text" required></textarea>' +
+                                                '</div>' +
+                                            '</div>' +
+                                            '<h4></h4>'+
+                                            '<input type="submit" value="Add film to database">' +
+                                        '</form>'
+                            '</div>' +
                         '</div>';
     populateFilmTab(jsonData);
 }
@@ -467,7 +522,7 @@ const closeAddfilm = function(){
 }
 
 const addNewFilm = function(){
-
+    return false;
 }
 
 

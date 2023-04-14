@@ -633,6 +633,12 @@ FILMS     U    I
     height: 410px;
 }
 
+.film-tab-results{
+    text-align: center;
+    margin-top: 150px;
+    width: 100%;
+}
+
 .film-element{
     width: 197px;
     height: 240px;
@@ -747,14 +753,68 @@ FILMS     U    I
 }
 
 .add-film-form{
-    width: 600px;
-    height: 400px;
+    width: 540px;
+    height: 340px;
     background: var(--gray-700);
     position: absolute;
     left: 233px;
     top: 100px;
     border-radius: 20px;
+    padding: 30px;
+    overflow-y: auto;
 }
+
+.add-film-form-inputs-container{display: flex; justify-content: space-between; flex-wrap: wrap;}
+
+.add-film-form-inputs-container div{flex-shrink: 0; display: flex; flex-direction: column; margin-bottom: 30px;}
+
+.add-film-form-inputs-container div label{font-size: 14px;}
+
+.add-film-form-inputs-container div input[type="text"], .add-film-form-inputs-container div textarea{
+    width: 230px;
+    border: none;
+    outline: none;
+    background: var(--gray-680-30);
+    font-size: 14px;
+    padding: 4px;
+    letter-spacing: 2px;
+    border-radius: 20px;
+    height: 22px;
+    box-shadow: var(--box-shadoww);
+    flex-shrink: 0;
+    margin-top: 5px;
+    cursor:text;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+    user-select: text; 
+}
+
+.add-film-form-inputs-container div textarea{
+    resize: none;
+    width: 530px;
+    height: 100px;
+}
+
+.add-film-form form h4{font-size: 14px; text-align: center;}
+
+.add-film-form form input[type="submit"]{
+    background: var(--white-1000);
+    color: var(--black-1000);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-top: 20px;
+    width: 184px;
+    height: 40px;
+    border-radius: 30px;
+    margin-left: 178px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.add-film-form form input[type="submit"]:hover{transform: scale(1.03);}
+
+.add-film-form form input[type="submit"]:active{transform: scale(0.97);}
 
 /************
 
@@ -1173,3 +1233,4 @@ NOTIFICATIONS     U    I
 .dropped-rental-sub-element h4{width: 235px;}
 
 .dropped-rental-sub-element h5{width: 115px;}
+
