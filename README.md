@@ -1,12 +1,12 @@
 # WVY-DBMS
-A movie database application with **<a href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a>**, **<a href="https://www.w3.org/Style/CSS/Overview.en.html">CSS</a>** and **<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">Javascript</a> as the frontend, and **<a href="https://www.java.com/">Java</a>, more specifically **<a href="https://openjfx.io/">JAVAFX</a>** on the backend and a **<a href="https://www.postgresql.org/">postgresql</a> database
+A movie database application with **<a href="https://developer.mozilla.org/en-US/docs/Web/HTML">HTML</a>**, **<a href="https://www.w3.org/Style/CSS/Overview.en.html">CSS</a>** and **<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">Javascript</a>** as the frontend, and **<a href="https://www.java.com/">Java</a>**, more specifically **<a href="https://openjfx.io/">JAVAFX</a>** on the backend and a **<a href="https://www.postgresql.org/">postgresql</a>** database
 
 # TL; DR
 1. This project was done for <a href="https://www.cs.up.ac.za/module/cos221/">assignment 4 of COS221</a>
 2. This project is hosted and done in <a href="https://code.visualstudio.com/">VS Code</a> with the <a href="https://maven.apache.org/">Maven</a> build tool
 3. This project has a compiled and custom runtime image(exe) here: 
 4. You can fork and edit and play around with this project(if you want to) and even distribute as long as you link back to this repo as original source
-5. Although this app makes use of JAVAFX, I never used native functionality to design the app but rather embeded a web app into the webview. I made this decision because of time constraints.
+5. Although this app makes use of **<a href="https://openjfx.io/">JAVAFX</a>**, I never used native functionality to design the app but rather embeded a web app into the webview. I made this decision because of time constraints.
 6. The UI was fully designed in <a href="https://www.figma.com/">figma</a>. <a href="#">Click here to access the design file</a>(Note you need to have <a href="https://www.figma.com/downloads/">figma</a> installed in order to open fig files)
 
 # Presentation images
