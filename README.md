@@ -18,8 +18,9 @@ A movie database application with **<a href="https://developer.mozilla.org/en-US
 ![just the home tab"](presentation-img/home-dashboard.png "just the home tab")
 
 # How to use this project
+***NB: if you feel these instructions are unclear or confusing, please have a look below them, I have included a section with links to other forms such as a video of these instructions and VS code and JAVAFX's official instructions for setup which I used when I was setting up everything.*** \\
 1. First download <a href="https://code.visualstudio.com/">VS Code</a>
-2. Follow this <a href="https://mkyong.com/maven/how-to-install-maven-in-windows/">article</a> to download maven and set the correct path variables
+2. Follow this <a href="https://mkyong.com/maven/how-to-install-maven-in-windows/">article</a> to download maven and set the correct path variables. Also make sure you hava java installed. I used <a href="https://www.oracle.com/java/technologies/javase/jdk20-archive-downloads.html">jdk version 20</a>.
 3. In VS code open the extensions tab and download and install the <a href="https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack">Java extension pack</a>
 4. At the top of the nav bar in vs code, there should be tab titled as view. Click on that then click on command pallete... and you will get a popup. 
 5. Search "crate java project" in the searchbar
@@ -40,3 +41,8 @@ A movie database application with **<a href="https://developer.mozilla.org/en-US
 20. The application should compile(could take some time) and launch.
 
 If you have any trouble setting this application up and need clearer guidance/instructions, please send me an email at <a href="mailto:u21546551@tuks.co.za">u21546551@tuks.co.za</a>
+
+# Other forms of setup instructions
+1. Video form: 
+2. VS code's official setup instructions: https://code.visualstudio.com/docs/java/java-gui
+3. Javafx's official setup instructions: https://openjfx.io/openjfx-docs/
