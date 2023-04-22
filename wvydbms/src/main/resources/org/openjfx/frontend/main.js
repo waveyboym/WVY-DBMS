@@ -187,60 +187,58 @@ const selectFilmsTabUI = function(jsonData){
                                 '<img src="assets/close-add-film.svg" alt="close-add-films"/>' +
                             '</div>' +
                             '<div class="add-film-form">'+
-                                '<form action="" onsubmit="return addNewFilm()">' +
-                                            '<div class="add-film-form-inputs-container">' +
-                                                '<div>' +
-                                                    '<label for="film_title">title</label>' +
-                                                    '<input name="film_title" type="text" id="film_title" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_genre">genre</label>' +
-                                                    '<input name="film_genre" type="text" id="film_genre" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_language">language</label>' +
-                                                    '<input name="film_language" type="text" id="film_language" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_release_year">release year</label>' +
-                                                    '<input name="film_release_year" type="text" id="film_release_year" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_rental_duration">rental duration</label>' +
-                                                    '<input name="film_rental_duration" type="text" id="film_rental_duration" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_rental_rate">rental rate</label>' +
-                                                    '<input name="film_rental_rate" type="text" id="film_rental_rate" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_length">length</label>' +
-                                                    '<input name="film_length" type="text" id="film_length" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_replacement_cost">replacement cost</label>' +
-                                                    '<input name="film_replacement_cost" type="text" id="film_replacement_cost" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_rating">rating</label>' +
-                                                    '<input name="film_rating" type="text" id="film_rating" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_special_features">special features</label>' +
-                                                    '<input name="film_special_features" type="text" id="film_special_features" required/>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_description">description</label>' +
-                                                    '<textarea name="film_description" id="film_description" required></textarea>' +
-                                                '</div>' +
-                                                '<div>' +
-                                                    '<label for="film_full_text">full text</label>' +
-                                                    '<textarea name="film_full_text" id="film_full_text" required></textarea>' +
-                                                '</div>' +
-                                            '</div>' +
-                                            '<h4></h4>'+
-                                            '<input type="submit" value="Add film to database">' +
-                                        '</form>'
+                                '<div class="add-film-form-inputs-container">' +
+                                    '<div>' +
+                                        '<label for="film_title">title</label>' +
+                                        '<input name="film_title" type="text" id="film_title" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_genre">genre</label>' +
+                                        '<input name="film_genre" type="text" id="film_genre" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_language">language</label>' +
+                                        '<input name="film_language" type="text" id="film_language" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_release_year">release year</label>' +
+                                        '<input name="film_release_year" type="text" id="film_release_year" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rental_duration">rental duration</label>' +
+                                        '<input name="film_rental_duration" type="text" id="film_rental_duration" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rental_rate">rental rate</label>' +
+                                        '<input name="film_rental_rate" type="text" id="film_rental_rate" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_length">length</label>' +
+                                        '<input name="film_length" type="text" id="film_length" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_replacement_cost">replacement cost</label>' +
+                                        '<input name="film_replacement_cost" type="text" id="film_replacement_cost" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rating">rating</label>' +
+                                        '<input name="film_rating" type="text" id="film_rating" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="store_address">store address</label>' +
+                                        '<input name="store_address" type="text" id="store_address" required/>' +
+                                    '</div>' +
+                                    '<div class="film_special_features-div">' +
+                                        '<label for="film_special_features">special features format: "sf 1", "sf2", ..., "sf n"</label>' +
+                                        '<input name="film_special_features" type="text" id="film_special_features" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_description">description</label>' +
+                                        '<textarea name="film_description" id="film_description" required></textarea>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<h4></h4>'+
+                                '<input type="submit" onmouseup="addNewFilm()" value="Add film to database">' +
                             '</div>' +
                         '</div>';
     populateFilmTab(jsonData);
@@ -386,6 +384,38 @@ const selectNotificationTabUI = function(){
                                                 '<label for="activestatus">active status</label>' +
                                                 '<input name="activestatus" type="text" id="activestatus" required/>' +
                                             '</div>' +
+                                            '<div>' +
+                                                '<label for="store_id">store id</label>' +
+                                                '<input name="store_id" type="text" id="store_id" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="country">country</label>' +
+                                                '<input name="country" type="text" id="country" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="city">city</label>' +
+                                                '<input name="city" type="text" id="city" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="district">district</label>' +
+                                                '<input name="district" type="text" id="district" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="postal_code">postal code</label>' +
+                                                '<input name="postal_code" type="text" id="postal_code" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="phone">phone</label>' +
+                                                '<input name="phone" type="text" id="phone" required/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="address">address</label>' +
+                                                '<textarea name="address" id="address" required></textarea>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="address2">address 2</label>' +
+                                                '<textarea name="address2" id="address2" required></textarea>' +
+                                            '</div>' +
                                         '</div>' +
                                         '<input type="submit" value="Add client to database">' +
                                     '</form>' +
@@ -399,21 +429,53 @@ const selectNotificationTabUI = function(){
                                     '<form action="" onsubmit="return upDateClientDataDatabase()">' +
                                         '<div class="edit-client-form-inputs-container">' +
                                             '<div>' +
-                                                '<label for="nameoptional">name(optional)</label>' +
-                                                '<input name="nameoptional" type="text" id="nameoptional"/>' +
+                                                '<label for="name_optional">name(optional)</label>' +
+                                                '<input name="name_optional" type="text" id="name_optional"/>' +
                                             '</div>' +
                                             '<div>' +
-                                                '<label for="surnameoptional">surname(optional)</label>' +
-                                                '<input name="surnameoptional" type="text" id="surnameoptional"/>' +
+                                                '<label for="surname_optional">surname(optional)</label>' +
+                                                '<input name="surname_optional" type="text" id="surname_optional"/>' +
                                             '</div>' +
                                             '<div>' +
-                                                '<label for="emailoptional">email(optional)</label>' +
-                                                '<input name="eamiloptional" type="text" id="emailoptional"/>' +
+                                                '<label for="email_optional">email(optional)</label>' +
+                                                '<input name="email_optional" type="text" id="email_optional"/>' +
                                             '</div>' +
                                             '<div>' +
-                                                '<label for="activestatusoptional">active status(optional)</label>' +
-                                                '<input name="activestatusoptional" type="text" id="activestatusoptional"/>' +
+                                                '<label for="activestatus_optional">active status(optional)</label>' +
+                                                '<input name="activestatus_optional" type="text" id="activestatus_optional"/>' +
                                             '</div>' +
+                                            '<div>' +
+                                                '<label for="store_id_optional">store id(optional)</label>' +
+                                                '<input name="store_id_optional" type="text" id="store_id_optional"/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="country_optional">country(optional)</label>' +
+                                                '<input name="country_optional" type="text" id="country_optional"/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="city_optional">city(optional)</label>' +
+                                                '<input name="city_optional" type="text" id="city_optional"/>' +
+                                            '</div>' +
+                                            '<div>' +
+                                                '<label for="district_optional">district(optional)</label>' +
+                                                '<input name="district_optional" type="text" id="district_optional"/>' +
+                                            '</div>' +
+                                        '<div>' +
+                                            '<label for="postal_code_optional">postal code(optional)</label>' +
+                                            '<input name="postal_code_optional" type="text" id="postal_code_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="phone_optional">phone(optional)</label>' +
+                                            '<input name="phone_optional" type="text" id="phone_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address_optional">address(optional)</label>' +
+                                            '<textarea name="address_optional" id="address_optional"></textarea>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address2_optional">address 2(optional)</label>' +
+                                            '<textarea name="address2_optional" id="address2_optional"></textarea>' +
+                                        '</div>' +
                                         '</div>' +
                                         '<input type="submit" value="update client info">' +
                                     '</form>' +
@@ -522,10 +584,123 @@ const closeAddfilm = function(){
 }
 
 const addNewFilm = function(){
-    return false;
+    const title = document.getElementById("film_title");//'Chamber Italian' max 255 characters
+    const genre = document.getElementById("film_genre");//'Action' max 25 characters
+    const lang = document.getElementById("film_language");//'English' max 20 characters
+    const release = document.getElementById("film_release_year");//optional - year number between 0000 and 9999
+    const rentaldur = document.getElementById("film_rental_duration");//number between -32768 and 32768
+    const rentalrate = document.getElementById("film_rental_rate");//number between -9999.99 and 9999.99
+    const len = document.getElementById("film_length");//optional - number between -32768 and 32768
+    const replacementcost = document.getElementById("film_replacement_cost");//number between -99999.99 and 99999.99
+    const rating = document.getElementById("film_rating");//either 'G','PG','PG-13','R','NC-17'
+    const specialfeatures = document.getElementById("film_special_features");//'{Trailers}'
+    const description = document.getElementById("film_description");//optional - max 65535  characters
+    const storeaddress = document.getElementById("store_address");
+
+    const errorContext = document.querySelector(".add-film-form h4");
+
+    if(title === null || genre === null || lang === null || release === null 
+        || rentaldur === null || len === null || rentalrate === null ||
+        replacementcost === null || rating === null || specialfeatures === null
+        || description === null || storeaddress === null){
+            if(errorContext !== null)errorContext.innerHTML = "An error occurred with the application";
+            return;
+    }
+
+    if(title.value === "" || genre.value === "" || lang.value === "" || release.value === "" 
+        || rentaldur.value === "" || len.value === "" || rentalrate.value === "" ||
+        replacementcost.value === "" || rating.value === "" || specialfeatures.value === ""
+        || description.value === "" || storeaddress.value === ""){
+            if(errorContext !== null)errorContext.innerHTML = "No fields on the form can be empty";
+            return;
+    }
+
+    if(title.value.length > 128){
+        errorContext.innerHTML = "Title must be less than  or equal to 128 characters";
+        return;
+    }
+    if(!(release.value >= 0000 && release.value <= 3000)){
+        errorContext.innerHTML = "Release year must be between 0000 and 3000";
+        return;
+    }
+    if(!(rentaldur.value >= 0 && rentaldur.value <= 255)){
+        errorContext.innerHTML = "Rental duration must be between 0 and 255";
+        return;
+    }
+    if(!(rentalrate.value >= 0.00 && rentalrate.value <= 99.99)){
+        errorContext.innerHTML = "Rental rate must be between 0.00 and 99.99";
+        return;
+    }
+    if(!(len.value >= -32768 && len.value <= 32768)){
+        errorContext.innerHTML = "Length of film must be between -32768 and 32768";
+        return;
+    }
+    if(!(replacementcost.value >= 0.00 && replacementcost.value <= 999.99)){
+        errorContext.innerHTML = "Replacement cost must be between 0.00 and 999.99";
+        return;
+    }
+    if(rating.value !== "G" && rating.value !== "PG" && rating.value !== "PG-13" && rating.value !== "R" && rating.value !== "NC-17"){
+        errorContext.innerHTML = "Rating can only be between: 'G','PG','PG-13','R','NC-17'";
+        return;
+    }
+    if(!specialfeatures.value.includes("Trailers") && !specialfeatures.value.includes("Commentaries") 
+        && !specialfeatures.value.includes("Deleted Scenes") && !specialfeatures.value.includes("Behind the Scenes")){
+            errorContext.innerHTML = "Special features can only include: 'Trailers','Commentaries','Deleted Scenes' or 'Behind the Scenes'";
+            return;
+    }
+    if(description.value.length > 65535){
+        errorContext.innerHTML = "Description must be less than  or equal to 65535 characters";
+        return;
+    }
+        
+    JAVA__READABLE__TEXT = "{" +
+                                "\"title\":\"" + title.value + "\"," +
+                                "\"genre\":\"" + genre.value + "\"," +
+                                "\"language\":\"" + lang.value + "\"," +
+                                "\"release_year\":" + release.value + "," +
+                                "\"rental_duration\":" + rentaldur.value + "," +
+                                "\"length\":" + len.value + "," +
+                                "\"rental_rate\":" + rentalrate.value + "," +
+                                "\"replacement_cost\":" + replacementcost.value + "," +
+                                "\"rating\":\"" + rating.value + "\"," +
+                                "\"special_features\":\"" + specialfeatures.value + "\"," +
+                                "\"description\":\"" + description.value + "\"," +
+                                "\"fulltext\":\"''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5\"," +
+                                "\"storeaddress\":\"" + storeaddress.value + "\"," +
+                            "}";
+    InterfaceAPIOBJ.addFilmFunc();
 }
 
+const responseToAddNewFilm = function(jsonData){
+    const res = JSON.parse(jsonData);
 
+    if(res.result == "error"){
+        const errorContext = document.querySelector(".add-film-form h4");
+        errorContext.innerHTML = res.data;
+    }
+    else{
+        const filmsresults = document.querySelector(".films-results");
+        if(filmsresults == null)return false;
+
+        const newFilmElement = document.createElement("div");
+        newFilmElement.className = "film-element";
+        newFilmElement.innerHTML = '<div class="film-element-img">' +
+                                        '<img src="'+ getImg() +'" alt="film-element-img"/>' +
+                                    '</div>' +
+                                    '<div class="film-element-layer_one"></div>' +
+                                    '<div class="film-element-layer_two"></div>' +
+                                    '<div class="film-element-content">' +
+                                        '<h3>'+ res.data.title +'</h3>' +
+                                        '<h2>'+ res.data.len +' mins</h2>' +
+                                        '<div class="film-element-divider">' +
+                                            '<h4>'+ res.data.release +'</h4>' +
+                                            '<h4>'+ res.data.rating +'</h4>' +
+                                        '</div>' +
+                                    '</div>';
+        filmsresults.insertBefore(newFilmElement, filmsresults.children[0]);
+        closeAddfilm();
+    }
+}
 
 
 

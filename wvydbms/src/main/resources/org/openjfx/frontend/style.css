@@ -790,15 +790,26 @@ FILMS     U    I
     user-select: text; 
 }
 
+.add-film-form-inputs-container .film_special_features-div input[type="text"]{
+    width: 530px;
+}
+
 .add-film-form-inputs-container div textarea{
     resize: none;
     width: 530px;
     height: 100px;
 }
 
-.add-film-form form h4{font-size: 14px; text-align: center;}
+.add-film-form h4{
+    font-size: 14px; 
+    text-align: center;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+    user-select: text;
+}
 
-.add-film-form form input[type="submit"]{
+.add-film-form input[type="submit"]{
     background: var(--white-1000);
     color: var(--black-1000);
     cursor: pointer;
@@ -812,9 +823,9 @@ FILMS     U    I
     transition: transform 0.3s ease-in-out;
 }
 
-.add-film-form form input[type="submit"]:hover{transform: scale(1.03);}
+.add-film-form input[type="submit"]:hover{transform: scale(1.03);}
 
-.add-film-form form input[type="submit"]:active{transform: scale(0.97);}
+.add-film-form input[type="submit"]:active{transform: scale(0.97);}
 
 /************
 
@@ -1140,7 +1151,8 @@ NOTIFICATIONS     U    I
 
 .add-client-form-inputs-container div label, .edit-client-form-inputs-container div label{font-size: 14px;}
 
-.add-client-form-inputs-container div input[type="text"], .edit-client-form-inputs-container div input[type="text"]{
+.add-client-form-inputs-container div input[type="text"], .edit-client-form-inputs-container div input[type="text"],
+.add-client-form-inputs-container div textarea, .edit-client-form-inputs-container div textarea{
     width: 187px;
     border: none;
     outline: none;
@@ -1158,6 +1170,12 @@ NOTIFICATIONS     U    I
     -moz-user-select: text;     /* Firefox all */
     -ms-user-select: text;      /* IE 10+ */
     user-select: text; 
+}
+
+.add-client-form-inputs-container div textarea, .edit-client-form-inputs-container div textarea{
+    resize: none;
+    width: 410px;
+    height: 100px;
 }
 
 .add-client-form form input[type="submit"], .edit-client-form form input[type="submit"]{
