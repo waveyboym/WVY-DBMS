@@ -18,7 +18,10 @@ public class Interfaceapi {
 
     public void closeWindow(){this.DatabaseManager.closeDatabase(); this.stage.close();}
 
-    public void fillDashBoard(){this.webEngine.executeScript("selectDashboardUI('"+ DatabaseManager.getDashBoardValues() +"')");}
+    public void fillDashBoard(){
+        String staffAttribute = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        this.webEngine.executeScript("selectDashboardUI('"+ DatabaseManager.getDashBoardValues() +"')");
+    }
 
     public void fillStaffTab(){this.webEngine.executeScript("selectStaffTabUI('"+ DatabaseManager.getAllStaff() +"')");}
 
@@ -29,9 +32,9 @@ public class Interfaceapi {
 
     public void fillFilmTab(){this.webEngine.executeScript("selectFilmsTabUI('"+ DatabaseManager.getAllFilms() +"')");}
 
-    public void addFilm(){//NNN
+    public void addFilmFunc(){
         String jsonData = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
-        DatabaseManager.AddNewFilm(jsonData);
+        this.webEngine.executeScript("responseToAddNewFilm('"+ DatabaseManager.AddNewFilm(jsonData) +"')");
     }
 
     public void getAllRecords(){this.webEngine.executeScript("selectReportTabUI('"+ DatabaseManager.getRecords() +"')");}

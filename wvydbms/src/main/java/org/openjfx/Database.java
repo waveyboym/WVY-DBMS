@@ -63,6 +63,24 @@ public class Database {
         catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
     }
 
+    public void setfloatValues(int Index, float value){
+        if(conn == null)return;
+        try{
+            if(query == null)throw new Exception("NullPointerException: Database.java:60(query is null)");
+            query.setFloat(Index, value);
+        }
+        catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
+    }
+
+    public void setArrayValues(int Index, String[] value){
+        if(conn == null)return;
+        try{
+            if(query == null)throw new Exception("NullPointerException: Database.java:60(query is null)");
+            query.setArray(Index, conn.createArrayOf("TEXT", value));
+        }
+        catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
+    }
+
     public ResultSet getResults(){
         if(conn == null)return null;
         try{ResultSet result = query.executeQuery(); return result;}

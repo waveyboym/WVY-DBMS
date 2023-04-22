@@ -76,8 +76,125 @@ public class Controller {
         + "]}";
     }
 
-    public void AddNewFilm(String jsondata){//---???
+    public String AddNewFilm(String jsondata){//YYY
+        JSONObject clientdata = (JSONObject)JSONValue.parse(jsondata);
+        String title = (String)clientdata.get("title");
+        String genre = (String)clientdata.get("genre");
+        String language = (String)clientdata.get("language");
+        Number release_year = (Number)clientdata.get("release_year");
+        Number rental_duration = (Number)clientdata.get("rental_duration");
+        Number length = (Number)clientdata.get("length");
+        Number rental_rate = (Number)clientdata.get("rental_rate");
+        Number replacement_cost = (Number)clientdata.get("replacement_cost");
+        String rating = (String)clientdata.get("rating");
+        String special_features = (String)clientdata.get("special_features");
+        String description = (String)clientdata.get("description");
+        String fulltext = (String)clientdata.get("fulltext");
+        String storeaddress = (String)clientdata.get("storeaddress");
+        
+        //get store id
+        int store_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT store.store_id FROM address INNER JOIN store " +
+            "on store.address_id = address.address_id WHERE address.address ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + storeaddress + "%");
+        ResultSet res = this.databaseinstance.getResults();
+        try{
+            if(res.next())store_id = res.getInt(1);
+            else return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";}
+    
 
+        //get language id if none, create a new language and get new language id
+        int langauge_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT language_id FROM language WHERE name ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + language + "%");
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())langauge_id = res.getInt(1);
+            else{
+                this.databaseinstance.PrepareStatement("INSERT INTO language(name) VALUES(?)");
+                this.databaseinstance.setValues(1, language);
+                this.databaseinstance.ExecuteUpdate();
+    
+                this.databaseinstance.PrepareStatement("SELECT language_id FROM language WHERE name ILIKE ? LIMIT 1;");
+                this.databaseinstance.setValues(1, "%" + language + "%");
+                res = this.databaseinstance.getResults();
+                if(res.next())langauge_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"Database failed to add new language\"}";
+            }
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get language\"}";}
+        
+        
+        //get category id(genre) if none, create a new category and get new category id
+        int category_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT category_id FROM category WHERE name ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + genre + "%");
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())category_id = res.getInt(1);
+            else{
+                this.databaseinstance.PrepareStatement("INSERT INTO category(name) VALUES(?)");
+                this.databaseinstance.setValues(1, genre);
+                this.databaseinstance.ExecuteUpdate();
+    
+                this.databaseinstance.PrepareStatement("SELECT category_id FROM category WHERE name ILIKE ? LIMIT 1;");
+                this.databaseinstance.setValues(1, "%" + genre + "%");
+                res = this.databaseinstance.getResults();
+                if(res.next())category_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"Database failed to add new genre\"}";
+            }
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to add new genre\"}";}
+
+        //create a new film by inserting
+        this.databaseinstance.PrepareStatement("INSERT INTO film(title, description, release_year, language_id, rental_duration, " +
+        "rental_rate, length, replacement_cost, special_features, fulltext) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, " + 
+        "'''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5')");
+        this.databaseinstance.setValues(1, title);
+        this.databaseinstance.setValues(2, description);
+        this.databaseinstance.setIntValues(3, release_year.intValue());
+        this.databaseinstance.setIntValues(4, langauge_id);
+        this.databaseinstance.setIntValues(5, rental_duration.intValue());
+        this.databaseinstance.setfloatValues(6, rental_rate.floatValue());
+        this.databaseinstance.setIntValues(7, length.intValue());
+        this.databaseinstance.setfloatValues(8, replacement_cost.floatValue());
+        this.databaseinstance.setArrayValues(9, special_features.split(","));
+        //this.databaseinstance.setValues(10, description);
+        //this.databaseinstance.setValues(11, decipherRating(rating));
+        this.databaseinstance.ExecuteUpdate();
+
+        //get that films id
+        int film_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT film_id FROM film WHERE title = ? LIMIT 1;");
+        this.databaseinstance.setValues(1, title);
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())film_id = res.getInt(1);
+            else return "{\"result\":\"error\",\"data\":\"Database failed to add new film\"}";
+        }
+        catch(Exception e){return "{\"result\":\"error\",\"data\":\"Database failed to add new film\"}";}
+
+        //place the new film id with the category id into film_category
+        this.databaseinstance.PrepareStatement("INSERT INTO film_category(film_id, category_id) VALUES(?, ?)");
+        this.databaseinstance.setIntValues(1, film_id);
+        this.databaseinstance.setIntValues(2, category_id);
+        this.databaseinstance.ExecuteUpdate();
+
+        //place the new film id and store id into inventory
+        this.databaseinstance.PrepareStatement("INSERT INTO inventory(film_id, store_id) VALUES(?, ?)");
+        this.databaseinstance.setIntValues(1, film_id);
+        this.databaseinstance.setIntValues(2, store_id);
+        this.databaseinstance.ExecuteUpdate();
+        
+        return "{\"result\":\"success\"," +
+        "\"data\":{"+
+            "\"title\":\""+ title +"\"," +
+            "\"len\":\""+ length.intValue() +"\"," +
+            "\"release\":\""+ release_year.intValue() +"\"," +
+            "\"rating\":\""+ rating +"\"" +
+        "}}";
     }
 
     public String getRecords(){//YYY
@@ -194,6 +311,14 @@ public class Controller {
                     parseType.CLIENTS)
             + "]}";
     } 
+
+    private String decipherRating(String rating){
+        if(rating == "G")return "'G'::public.mpaa_rating";
+        else if(rating == "PG")return "'PG'::public.mpaa_rating";
+        else if(rating == "PG-13")return "'PG-13'::public.mpaa_rating";
+        else if(rating == "R")return "'R'::public.mpaa_rating";
+        else return "'NC-17'::public.mpaa_rating";
+    }
 
     private ResultSet queryDBNoVal(String stmnt){
         this.databaseinstance.PrepareStatement(stmnt);
