@@ -7,7 +7,7 @@ A movie database application with **<a href="https://developer.mozilla.org/en-US
 3. This project has a compiled and custom runtime image(exe) here: 
 4. You can fork and edit and play around with this project(if you want to) and even distribute as long as you link back to this repo as original source
 5. Although this app makes use of **<a href="https://openjfx.io/">JAVAFX</a>**, I never used native functionality to design the app but rather embeded a web app into the webview. I made this decision because of time constraints.
-6. The UI was fully designed in <a href="https://www.figma.com/">figma</a>. <a href="#">Click here to access the design file</a>(Note you need to have <a href="https://www.figma.com/downloads/">figma</a> installed in order to open fig files)
+6. The UI was fully designed in <a href="https://www.figma.com/">figma</a>. <a href="https://drive.google.com/file/d/1ul2-0aOcYZJKbd5Npo7ZbMOWKqbwjlWg/view?usp=sharing">Click here to access the design file</a>(Note you need to have <a href="https://www.figma.com/downloads/">figma</a> installed in order to open fig files)
 
 # Presentation images
 ![all tabs](presentation-img/demo1.png "all tabs")
