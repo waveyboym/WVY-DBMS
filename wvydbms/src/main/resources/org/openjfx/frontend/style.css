@@ -701,6 +701,8 @@ FILMS     U    I
     font-weight: var(--regular-f);
     text-overflow: ellipsis;
     word-wrap: none;
+    white-space: nowrap;
+    overflow: hidden;
     width: 167px;
     margin-left: 15px;
     margin-top: 150px;
@@ -1142,6 +1144,7 @@ NOTIFICATIONS     U    I
     left: 293px;
     top: 159px;
     border-radius: 20px;
+    overflow-y: auto;
 }
 
 .add-client-form-inputs-container, .edit-client-form-inputs-container{display: flex; justify-content: space-between; flex-wrap: wrap;}
@@ -1178,7 +1181,16 @@ NOTIFICATIONS     U    I
     height: 100px;
 }
 
-.add-client-form form input[type="submit"], .edit-client-form form input[type="submit"]{
+.add-client-form h4, .edit-client-form h4{
+    font-size: 14px; 
+    text-align: center;
+    -webkit-user-select: text;  /* Chrome all / Safari all */
+    -moz-user-select: text;     /* Firefox all */
+    -ms-user-select: text;      /* IE 10+ */
+    user-select: text;
+}
+
+.add-client-form input[type="submit"], .edit-client-form input[type="submit"]{
     background: var(--white-1000);
     color: var(--black-1000);
     cursor: pointer;
@@ -1192,9 +1204,9 @@ NOTIFICATIONS     U    I
     transition: transform 0.3s ease-in-out;
 }
 
-.add-client-form form input[type="submit"]:hover, .edit-client-form form input[type="submit"]:hover{transform: scale(1.03);}
+.add-client-form input[type="submit"]:hover, .edit-client-form input[type="submit"]:hover{transform: scale(1.03);}
 
-.add-client-form form input[type="submit"]:active, .edit-client-form form input[type="submit"]:active{transform: scale(0.97);}
+.add-client-form input[type="submit"]:active, .edit-client-form input[type="submit"]:active{transform: scale(0.97);}
 
 .dropped-rental-sub-headers{display: flex; height: 30px; width: 721px;}
 
@@ -1251,4 +1263,3 @@ NOTIFICATIONS     U    I
 .dropped-rental-sub-element h4{width: 235px;}
 
 .dropped-rental-sub-element h5{width: 115px;}
-
