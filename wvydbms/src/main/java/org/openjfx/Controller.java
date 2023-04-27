@@ -182,9 +182,9 @@ public class Controller {
         String rating = (String)clientdata.get("rating");
         String special_features = (String)clientdata.get("special_features");
         String description = (String)clientdata.get("description");
-        //String fulltext = (String)clientdata.get("fulltext");
         String storeaddress = (String)clientdata.get("storeaddress");
         
+
         //get store id
         int store_id = -1;
         this.databaseinstance.PrepareStatement("SELECT store.store_id FROM address INNER JOIN store " +
@@ -199,12 +199,12 @@ public class Controller {
     
 
         //get language id if none, create a new language and get new language id
-        int langauge_id = -1;
+        int language_id = -1;
         this.databaseinstance.PrepareStatement("SELECT language_id FROM language WHERE name ILIKE ? LIMIT 1;");
         this.databaseinstance.setValues(1, "%" + language + "%");
         res = this.databaseinstance.getResults();
         try{
-            if(res.next())langauge_id = res.getInt(1);
+            if(res.next())language_id = res.getInt(1);
             else{
                 this.databaseinstance.PrepareStatement("INSERT INTO language(name) VALUES(?);");
                 this.databaseinstance.setValues(1, language);
@@ -213,7 +213,7 @@ public class Controller {
                 this.databaseinstance.PrepareStatement("SELECT language_id FROM language WHERE name ILIKE ? LIMIT 1;");
                 this.databaseinstance.setValues(1, "%" + language + "%");
                 res = this.databaseinstance.getResults();
-                if(res.next())langauge_id = res.getInt(1);
+                if(res.next())language_id = res.getInt(1);
                 else return "{\"result\": \"error\", \"data\": \"Database failed to add new language\"}";
             }
         }
@@ -241,27 +241,43 @@ public class Controller {
         }
         catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to add new genre\"}";}
 
+
+        //check if film exists
+        this.databaseinstance.PrepareStatement("SELECT COUNT(*) FROM film WHERE title ILIKE ? AND description ILIKE ?;");
+        this.databaseinstance.setValues(1, title);
+        this.databaseinstance.setValues(2, description);
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next()){
+                int countval = res.getInt(1);
+                if(countval >= 1)return "{\"result\":\"error\",\"data\":\"Database found duplicate of this film, cannot add new film\"}";
+            }
+            else return "{\"result\":\"error\",\"data\":\"Database failed to query if duplicate exists\"}";
+        }
+        catch(Exception e){return "{\"result\":\"error\",\"data\":\"Database failed to query if duplicate exists\"}";}
+
+
         //create a new film by inserting
         this.databaseinstance.PrepareStatement("INSERT INTO film(title, description, release_year, language_id, rental_duration, " +
-        "rental_rate, length, replacement_cost, special_features, rating, fulltext) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?," +
-        decipherRating(rating) + ", " + 
-        "'''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5');");
+        "rental_rate, length, replacement_cost, special_features, rating, fulltext) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, " +
+        decipherRating(rating) + ", to_tsvector(?));");
         this.databaseinstance.setValues(1, title);
         this.databaseinstance.setValues(2, description);
         this.databaseinstance.setIntValues(3, release_year.intValue());
-        this.databaseinstance.setIntValues(4, langauge_id);
+        this.databaseinstance.setIntValues(4, language_id);
         this.databaseinstance.setIntValues(5, rental_duration.intValue());
         this.databaseinstance.setfloatValues(6, rental_rate.floatValue());
         this.databaseinstance.setIntValues(7, length.intValue());
         this.databaseinstance.setfloatValues(8, replacement_cost.floatValue());
         this.databaseinstance.setArrayValues(9, special_features.split(","));
-        //this.databaseinstance.setValues(10, description);
+        this.databaseinstance.setValues(10, description);
         this.databaseinstance.ExecuteUpdate();
 
         //get that films id
         int film_id = -1;
-        this.databaseinstance.PrepareStatement("SELECT film_id FROM film WHERE title = ? LIMIT 1;");
+        this.databaseinstance.PrepareStatement("SELECT film_id FROM film WHERE title = ? AND description = ? LIMIT 1;");
         this.databaseinstance.setValues(1, title);
+        this.databaseinstance.setValues(2, description);
         res = this.databaseinstance.getResults();
         try{
             if(res.next())film_id = res.getInt(1);
@@ -345,28 +361,28 @@ public class Controller {
         String address2 = (String)clientdata.get("address2");
         String storeaddress = (String)clientdata.get("storeaddress");
 
-        if(name != ""){
-            this.databaseinstance.PrepareStatement("UPDATE customer SET name = ? WHERE customer_id = ?;");
+        if(!name.equals("")){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET first_name = ? WHERE customer_id = ?;");
             this.databaseinstance.setValues(1, name);
             this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
             if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update name\"}";
         }
 
-        if(surname != ""){
-            this.databaseinstance.PrepareStatement("UPDATE customer SET surname = ? WHERE customer_id = ?;");
+        if(!surname.equals("")){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET last_name = ? WHERE customer_id = ?;");
             this.databaseinstance.setValues(1, surname);
             this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
             if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update surname\"}";
         }
 
-        if(email != ""){
+        if(!email.equals("")){
             this.databaseinstance.PrepareStatement("UPDATE customer SET email = ? WHERE customer_id = ?;");
             this.databaseinstance.setValues(1, email);
             this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
             if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update email\"}";
         }
 
-        if(activestatus != ""){
+        if(!activestatus.equals("")){
             this.databaseinstance.PrepareStatement("UPDATE customer SET activebool = ?, SET active = ?  WHERE customer_id = ?;");
             this.databaseinstance.setBooleanValues(1, activestatus.equals("active") ? true : false);
             this.databaseinstance.setIntValues(2, activestatus.equals("active") ? 1 : 0);
@@ -376,7 +392,7 @@ public class Controller {
 
         int country_id = -1;
         int city_id = -1;
-        if(country != "" && city != ""){
+        if(!country.equals("") && !city.equals("")){
             this.databaseinstance.PrepareStatement("SELECT country_id FROM country WHERE country ILIKE ? LIMIT 1;");
             this.databaseinstance.setValues(1, "%" + country + "%");
             ResultSet res = this.databaseinstance.getResults();
@@ -419,7 +435,8 @@ public class Controller {
         }
 
         int address_id = -1;
-        if(address != "" && address2 != "" && district != "" && postalcode != "" && phone != "" && city != "" && city_id != -1){
+        if(!address.equals("") && !address2.equals("") && !district.equals("") 
+            && !postalcode.equals("") && !phone.equals("") && !city.equals("") && city_id != -1){
             //get address id if not insert new address
             this.databaseinstance.PrepareStatement("SELECT address_id FROM address WHERE " +
             "address ILIKE ? AND address2 ILIKE ? AND district ILIKE ? AND postal_code ILIKE ? " +
@@ -469,7 +486,7 @@ public class Controller {
         }
 
         //Update store address get store id
-        if(storeaddress != ""){
+        if(!storeaddress.equals("")){
             int store_id = -1;
             this.databaseinstance.PrepareStatement("SELECT store.store_id FROM address INNER JOIN store " +
                 "on store.address_id = address.address_id WHERE address.address ILIKE ? LIMIT 1;");
