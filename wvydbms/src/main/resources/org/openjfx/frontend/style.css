@@ -549,6 +549,13 @@ STAFFF    U    I
     height: 372px;
     overflow-y: auto;
     padding-top: 30px;
+    overflow-x: hidden;
+}
+
+.staff-tab-results-text{
+    width: 100%;
+    text-align: center;
+    margin-top: 160px;
 }
 
 .staff-element{
@@ -1055,6 +1062,12 @@ NOTIFICATIONS     U    I
     overflow-x: hidden;
 }
 
+.all-clients-results{
+    width: 100%;
+    text-align: center;
+    margin-top: 180px;
+}
+
 .client-element{
     display: flex;
     width: 277px;
@@ -1263,3 +1276,4 @@ NOTIFICATIONS     U    I
 .dropped-rental-sub-element h4{width: 235px;}
 
 .dropped-rental-sub-element h5{width: 115px;}
+

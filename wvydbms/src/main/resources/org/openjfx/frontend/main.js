@@ -162,7 +162,7 @@ const populateStaffTab = function(jsonData){
     stafftabresults.innerHTML = "";
     if(StaffUI__JSONDATA.staff.length === 0 || StaffUI__JSONDATA.staff[0] === "ServerError1" 
         || StaffUI__JSONDATA.staff[0] === "ServerError2"){
-        stafftabresults.innerHTML = "<h2 class='staff-tab-results'>no results found in database</h2>";
+        stafftabresults.innerHTML = "<h2 class='staff-tab-results-text'>no results found in database</h2>";
         return;
     }
     
@@ -253,7 +253,7 @@ const selectFilmsTabUI = function(jsonData){
                                         '<input name="store_address" type="text" id="store_address" required/>' +
                                     '</div>' +
                                     '<div class="film_special_features-div">' +
-                                        '<label for="film_special_features">special features format: "sf 1", "sf2", ..., "sf n"</label>' +
+                                        '<label for="film_special_features">special features format: sf 1, sf 2, ..., sf n</label>' +
                                         '<input name="film_special_features" type="text" id="film_special_features" required/>' +
                                     '</div>' +
                                     '<div>' +
@@ -372,7 +372,7 @@ const downloadReportAsPDF = function(){InterfaceAPIOBJ.downloadReportPDF();}
 
 const selectAllClients = function(){
     const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
-    if(selectedSubTab != null && selectedSubTab.classList.contains("dropped-rental"))return;
+    if(selectedSubTab != null && selectedSubTab.classList.contains("all-clients"))return;
     InterfaceAPIOBJ.fillClientsTab();
 }
 
@@ -532,7 +532,8 @@ const selectNotificationALLCLIENTS = function(jsonData){
     const Clients__JSONDATA = JSON.parse(jsonData);
     if(Clients__JSONDATA.clients.length === 0 || Clients__JSONDATA.clients[0] === "ServerError1" 
     || Clients__JSONDATA.clients[0] === "ServerError2"){
-        filmsresults.innerHTML = "<h2 class='all-clients-results'>no results found in database</h2>";
+        resultsDiv.innerHTML = "<h2 class='all-clients-results'>no results found in database</h2>";
+        return;
     }
 
     for(let i = 0; i < Clients__JSONDATA.clients.length; ++i){
@@ -707,7 +708,6 @@ const addNewFilm = function(){
                                 "\"rating\":\"" + rating.value + "\"," +
                                 "\"special_features\":\"" + specialfeatures.value + "\"," +
                                 "\"description\":\"" + description.value + "\"," +
-                                "\"fulltext\":\"''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5\"," +
                                 "\"storeaddress\":\"" + storeaddress.value + "\"," +
                             "}";
     InterfaceAPIOBJ.addFilmFunc();
@@ -923,7 +923,7 @@ const upDateClientDataDatabase = function(){
     if(name.value.length > 45){errorContext.innerHTML = "Name may not be more than 45 characters long";  return;}
     if(surname.value.length > 45){errorContext.innerHTML = "Surname may not be more than 45 characters long";  return;}
     if(email.value.length > 50){errorContext.innerHTML = "Email may not be more than 50 characters long";  return;}
-    if(activestatus.value !== "active" && activestatus.value !== "not active"){
+    if(activestatus.value !== "" && activestatus.value !== "active" && activestatus.value !== "not active"){
         errorContext.innerHTML = "Active status should either be active or not active";
         return;
     }
@@ -964,23 +964,27 @@ const responseToUpdateClient = function(jsonData){
         const el = document.getElementById(res.data.customer_id);
         if(el == null)return;
 
+        const clientdet = document.querySelectorAll("#" + CSS.escape(res.data.customer_id) + " .client-details h2");
+
         el.innerHTML = '<div class="client-details">' +
-                                        '<h2>Name: '+ res.data.first_name +'</h2>' +
-                                        '<h2>Surname: '+ res.data.last_name +'</h2>' +
-                                        '<h2>Email: '+ res.data.email +'</h2>' +
-                                        '<h2>Active status: '+ res.data.active +'</h2>' +
-                                    '</div>' +
-                                    '<div class="client-methods">' +
-                                        '<div class="edit-client-btn" onmouseup="openEditClient(\''+ res.data.customer_id +'\')">' +
-                                            '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
-                                        '</div>' +
-                                        '<div class="delete-client-btn" onmouseup="deleteClient(\''+ res.data.customer_id +'\')">' +
-                                            '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
-                                        '</div>' +
-                                    '</div>';
+                            '<h2>'+ getNonEmptyString(res.data.first_name, clientdet.item(0).innerHTML, "Name: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.last_name, clientdet.item(1).innerHTML, "Surname: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.email, clientdet.item(2).innerHTML, "Email: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.active, clientdet.item(3).innerHTML, "Active status: ") +'</h2>' +
+                        '</div>' +
+                        '<div class="client-methods">' +
+                            '<div class="edit-client-btn" onmouseup="openEditClient(\''+ res.data.customer_id +'\')">' +
+                                '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+                            '</div>' +
+                            '<div class="delete-client-btn" onmouseup="deleteClient(\''+ res.data.customer_id +'\')">' +
+                                '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                            '</div>' +
+                        '</div>';
         closeEditClient();
     }
 }
+
+const getNonEmptyString = function(val1, val2, appendval){return val1 === "" ? val2 : appendval + val1;}
 
 const searchClient = function(){
     JAVA__READABLE__TEXT = document.getElementById("clientSearchAttribute").value;
