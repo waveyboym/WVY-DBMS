@@ -2,11 +2,27 @@ package org.openjfx;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Phrase;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+
 public class Controller {
     private final Database databaseinstance;
+    private String reportJSON = "";
     enum parseType {
         FILMCOUNT, 
         LASTCREATEDMOVIE, 
@@ -22,6 +38,83 @@ public class Controller {
     public Controller(){this.databaseinstance = new Database();}
 
     public void closeDatabase(){this.databaseinstance.close();}
+
+    public void prepareReportPDF(){
+        /*
+        * $Id: Tables.java 3373 2008-05-12 16:21:24Z xlv $
+        *
+        * This code is free software. It may only be copied or modified
+        * if you include the following copyright notice:
+        *
+        * --> Copyright 2001-2005 by G. Martinelli and Bruno Lowagie <--
+        *
+        * This code is part of the 'OpenPDF Tutorial'.
+        * You can find the complete tutorial at the following address:
+        * https://github.com/LibrePDF/OpenPDFtutorial/
+        *
+        * This code is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+        *
+        *  
+        */
+
+        /**This code came from openpdf but was modified to suit my needs */
+
+        Font font8 = FontFactory.getFont(FontFactory.HELVETICA, 8);
+        Document document = new Document(PageSize.A4);
+
+        try {
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("report.pdf"));
+            float width = document.getPageSize().getWidth();
+            document.open();
+
+            float[] columnDefinitionSize = { 50F, 25F, 25F };
+            PdfPTable table = null;
+            PdfPCell cell = null;
+
+            table = new PdfPTable(columnDefinitionSize);
+            table.getDefaultCell().setBorder(0);
+            table.setHorizontalAlignment(0);
+            table.setTotalWidth(width - 72);
+            table.setLockedWidth(true);
+
+            cell = new PdfPCell(new Phrase("Report"));
+            cell.setColspan(columnDefinitionSize.length);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("Workplace address", font8));
+            cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("Genre", font8));
+            cell.setColspan(1);
+            table.addCell(cell);
+
+            cell = new PdfPCell(new Phrase("Count", font8));
+            cell.setColspan(1);
+            table.addCell(cell);
+
+            JSONObject reportobjArr = (JSONObject)JSONValue.parse(this.reportJSON);
+            JSONArray reportarr = (JSONArray)reportobjArr.get("records");
+            for (int i = 0 ; i < reportarr.size(); ++i) {
+                JSONObject obj = (JSONObject) reportarr.get(i);
+                String workplaceAddress = (String) obj.get("workplaceAddress");
+                String genre = (String) obj.get("genre");
+                Number count = (Number) obj.get("count");
+
+                table.addCell(new Phrase(workplaceAddress, font8));
+                table.addCell(new Phrase(genre, font8));
+                table.addCell(new Phrase(count.toString(), font8));
+            }
+
+            document.add(table);
+        }
+
+        catch (DocumentException | IOException de) {System.err.println(de.getMessage());}
+        // step 5
+        document.close();
+    }
 
     public String getDashBoardValues(){
         return "{" +
@@ -51,7 +144,7 @@ public class Controller {
         return "{\"staff\": [" + 
                     this.jsonParseResults(
                         this.queryDBNoVal("SELECT * FROM ((city INNER JOIN address ON city.city_id = address.city_id) " +
-                        "INNER JOIN staff ON staff.address_id = address.address_id) ORDER BY staff.staff_id ASC LIMIT 20;"), 
+                        "INNER JOIN staff ON staff.address_id = address.address_id) ORDER BY staff.staff_id ASC LIMIT 40;"), 
                     parseType.STAFF)
                     +"]}";
     }
@@ -60,7 +153,7 @@ public class Controller {
         this.databaseinstance.PrepareStatement("SELECT * FROM ((city INNER JOIN address ON city.city_id = address.city_id) " +
                                                 "INNER JOIN staff ON staff.address_id = address.address_id) " +
                                                 "WHERE staff.first_name ILIKE ?" + 
-                                                " OR staff.last_name ILIKE ? ORDER BY staff.staff_id ASC LIMIT 20;");
+                                                " OR staff.last_name ILIKE ? ORDER BY staff.staff_id ASC LIMIT 40;");
         
         this.databaseinstance.setValues(1, "%" + attribute + "%");
         this.databaseinstance.setValues(2, "%" + attribute + "%");
@@ -71,7 +164,7 @@ public class Controller {
     public String getAllFilms(){//YYY
         return "{\"films\": [" +
             this.jsonParseResults(
-                this.queryDBNoVal("SELECT * FROM film ORDER BY film_id DESC LIMIT 24;"),
+                this.queryDBNoVal("SELECT * FROM film ORDER BY film_id DESC LIMIT 48;"),
                 parseType.FILMS)               
         + "]}";
     }
@@ -89,7 +182,7 @@ public class Controller {
         String rating = (String)clientdata.get("rating");
         String special_features = (String)clientdata.get("special_features");
         String description = (String)clientdata.get("description");
-        String fulltext = (String)clientdata.get("fulltext");
+        //String fulltext = (String)clientdata.get("fulltext");
         String storeaddress = (String)clientdata.get("storeaddress");
         
         //get store id
@@ -113,7 +206,7 @@ public class Controller {
         try{
             if(res.next())langauge_id = res.getInt(1);
             else{
-                this.databaseinstance.PrepareStatement("INSERT INTO language(name) VALUES(?)");
+                this.databaseinstance.PrepareStatement("INSERT INTO language(name) VALUES(?);");
                 this.databaseinstance.setValues(1, language);
                 this.databaseinstance.ExecuteUpdate();
     
@@ -135,7 +228,7 @@ public class Controller {
         try{
             if(res.next())category_id = res.getInt(1);
             else{
-                this.databaseinstance.PrepareStatement("INSERT INTO category(name) VALUES(?)");
+                this.databaseinstance.PrepareStatement("INSERT INTO category(name) VALUES(?);");
                 this.databaseinstance.setValues(1, genre);
                 this.databaseinstance.ExecuteUpdate();
     
@@ -150,8 +243,9 @@ public class Controller {
 
         //create a new film by inserting
         this.databaseinstance.PrepareStatement("INSERT INTO film(title, description, release_year, language_id, rental_duration, " +
-        "rental_rate, length, replacement_cost, special_features, fulltext) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, " + 
-        "'''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5')");
+        "rental_rate, length, replacement_cost, special_features, rating, fulltext) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?," +
+        decipherRating(rating) + ", " + 
+        "'''chamber'':1 ''fate'':4 ''husband'':11 ''italian'':2 ''monkey'':16 ''moos'':8 ''must'':13 ''nigeria'':18 ''overcom'':14 ''reflect'':5');");
         this.databaseinstance.setValues(1, title);
         this.databaseinstance.setValues(2, description);
         this.databaseinstance.setIntValues(3, release_year.intValue());
@@ -162,7 +256,6 @@ public class Controller {
         this.databaseinstance.setfloatValues(8, replacement_cost.floatValue());
         this.databaseinstance.setArrayValues(9, special_features.split(","));
         //this.databaseinstance.setValues(10, description);
-        //this.databaseinstance.setValues(11, decipherRating(rating));
         this.databaseinstance.ExecuteUpdate();
 
         //get that films id
@@ -177,13 +270,13 @@ public class Controller {
         catch(Exception e){return "{\"result\":\"error\",\"data\":\"Database failed to add new film\"}";}
 
         //place the new film id with the category id into film_category
-        this.databaseinstance.PrepareStatement("INSERT INTO film_category(film_id, category_id) VALUES(?, ?)");
+        this.databaseinstance.PrepareStatement("INSERT INTO film_category(film_id, category_id) VALUES(?, ?);");
         this.databaseinstance.setIntValues(1, film_id);
         this.databaseinstance.setIntValues(2, category_id);
         this.databaseinstance.ExecuteUpdate();
 
         //place the new film id and store id into inventory
-        this.databaseinstance.PrepareStatement("INSERT INTO inventory(film_id, store_id) VALUES(?, ?)");
+        this.databaseinstance.PrepareStatement("INSERT INTO inventory(film_id, store_id) VALUES(?, ?);");
         this.databaseinstance.setIntValues(1, film_id);
         this.databaseinstance.setIntValues(2, store_id);
         this.databaseinstance.ExecuteUpdate();
@@ -198,35 +291,36 @@ public class Controller {
     }
 
     public String getRecords(){//YYY
-        return "{" +
+        this.reportJSON =  "{" +
             "\"records\": ["+ 
                 this.jsonParseResults(
                     this.queryDBNoVal("SELECT COUNT(res.film_id), res.name, res.store_id FROM " +
                     "(SELECT film.film_id, inventory.store_id, category.name FROM (((category " +
                         "INNER JOIN film_category ON category.category_id = film_category.category_id) " +
                         "INNER JOIN film ON film.film_id = film_category.film_id) " +
-                        "INNER JOIN inventory ON inventory.film_id = film.film_id) " + "LIMIT 100)" +
+                        "INNER JOIN inventory ON inventory.film_id = film.film_id))" +
                         " as res GROUP BY res.store_id, res.name;"),
                     parseType.REPORT)
                     + "]}";
+        return this.reportJSON;
     }
 
     public String getAllClients(){//YYY
         return "{" +
             "\"clients\": [" +
                 this.jsonParseResults(
-                    this.queryDBNoVal("SELECT customer_id, first_name, last_name, email, active FROM customer ORDER BY customer_id DESC LIMIT 24;"),
+                    this.queryDBNoVal("SELECT customer_id, first_name, last_name, email, active FROM customer ORDER BY customer_id DESC LIMIT 48;"),
                     parseType.CLIENTS)   
             + "]}"; 
     }
 
-    public void deleteClient(int id){//??? ask tutor or lecturer idk
-        //delete client from rental
-        this.databaseinstance.PrepareStatement("DELETE FROM rental WHERE customer_id = ?;");
-        this.databaseinstance.setIntValues(1, id);
-        this.databaseinstance.ExecuteUpdate();
+    public void deleteClient(int id){//YYY
         //delete client from from payment
         this.databaseinstance.PrepareStatement("DELETE FROM payment WHERE customer_id = ?;");
+        this.databaseinstance.setIntValues(1, id);
+        this.databaseinstance.ExecuteUpdate();
+        //delete client from rental
+        this.databaseinstance.PrepareStatement("DELETE FROM rental WHERE customer_id = ?;");
         this.databaseinstance.setIntValues(1, id);
         this.databaseinstance.ExecuteUpdate();
         //delete client from customer
@@ -235,68 +329,326 @@ public class Controller {
         this.databaseinstance.ExecuteUpdate();
     }
 
-    public void updateClient(String jsondata){//----???
+    public String updateClient(String jsondata){//----???
         JSONObject clientdata = (JSONObject)JSONValue.parse(jsondata);
-        Long id = (Long)clientdata.get("id");
-        String fname = (String)clientdata.get("first_name");
-        String lname = (String)clientdata.get("last_name");
+        String customer_id = (String)clientdata.get("customer_id");
+        String name = (String)clientdata.get("name");
+        String surname = (String)clientdata.get("surname");
         String email = (String)clientdata.get("email");
-        String active = (String)clientdata.get("active");
-        Boolean gotFirstEl = false;
-        int assignValCount = 0;
-        if(fname == "" && lname == "" && email == "" && active == "")return;
+        String activestatus = (String)clientdata.get("activestatus");
+        String city = (String)clientdata.get("city");
+        String country = (String)clientdata.get("country");
+        String district = (String)clientdata.get("district");
+        String postalcode = (String)clientdata.get("postalcode");
+        String phone = (String)clientdata.get("phone");
+        String address = (String)clientdata.get("address");
+        String address2 = (String)clientdata.get("address2");
+        String storeaddress = (String)clientdata.get("storeaddress");
 
-        String updateSTMT = "UPDATE customer ";
-        if(fname != "" && !gotFirstEl){
-            gotFirstEl = true;
-            updateSTMT += " SET first_name = ?";
-            ++assignValCount;
-        }
-        else if(fname != "" && gotFirstEl){updateSTMT += " ,SET first_name = ?"; ++assignValCount;}
-
-        if(lname != "" && !gotFirstEl){
-            gotFirstEl = true;
-            updateSTMT += " SET last_name = ?";
-            ++assignValCount;
-        }
-        else if(lname != "" && gotFirstEl){updateSTMT += " ,SET last_name = ?"; ++assignValCount;}
-
-        if(email != "" && !gotFirstEl){
-            gotFirstEl = true;
-            updateSTMT += " SET email = ?";
-            ++assignValCount;
-        }
-        else if(email != "" && gotFirstEl){updateSTMT += " ,SET email = ?"; ++assignValCount;}
-
-        if(active != "" && !gotFirstEl){
-            gotFirstEl = true;
-            updateSTMT += " SET active = ?";
-            ++assignValCount;
-        }
-        else if(active != "" && gotFirstEl){updateSTMT += " ,SET active = ?"; ++assignValCount;}
-
-        updateSTMT += " WHERE customer_id = ?;";
-        if(assignValCount == 0)return;
-
-        this.databaseinstance.PrepareStatement(updateSTMT);
-        for(int i = 1; i <= assignValCount; ++i){
-            if(fname != "")this.databaseinstance.setValues(i, fname);
-            else if(lname != "")this.databaseinstance.setValues(i, lname);
-            else if(email != "")this.databaseinstance.setValues(i, email);
-            else if(active != "")this.databaseinstance.setValues(i, active);
+        if(name != ""){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET name = ? WHERE customer_id = ?;");
+            this.databaseinstance.setValues(1, name);
+            this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update name\"}";
         }
 
-        this.databaseinstance.setIntValues(assignValCount + 1, id.intValue());
-        this.databaseinstance.ExecuteUpdate();
+        if(surname != ""){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET surname = ? WHERE customer_id = ?;");
+            this.databaseinstance.setValues(1, surname);
+            this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update surname\"}";
+        }
+
+        if(email != ""){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET email = ? WHERE customer_id = ?;");
+            this.databaseinstance.setValues(1, email);
+            this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update email\"}";
+        }
+
+        if(activestatus != ""){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET activebool = ?, SET active = ?  WHERE customer_id = ?;");
+            this.databaseinstance.setBooleanValues(1, activestatus.equals("active") ? true : false);
+            this.databaseinstance.setIntValues(2, activestatus.equals("active") ? 1 : 0);
+            this.databaseinstance.setIntValues(3, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update active status\"}";
+        }
+
+        int country_id = -1;
+        int city_id = -1;
+        if(country != "" && city != ""){
+            this.databaseinstance.PrepareStatement("SELECT country_id FROM country WHERE country ILIKE ? LIMIT 1;");
+            this.databaseinstance.setValues(1, "%" + country + "%");
+            ResultSet res = this.databaseinstance.getResults();
+            try{
+                if(res.next())country_id = res.getInt(1);
+                else{
+                    this.databaseinstance.PrepareStatement("INSERT INTO country(country) VALUES(?);");
+                    this.databaseinstance.setValues(1, country);
+                    this.databaseinstance.ExecuteUpdate();
+        
+                    this.databaseinstance.PrepareStatement("SELECT country_id FROM country WHERE country ILIKE ? LIMIT 1;");
+                    this.databaseinstance.setValues(1, "%" + country + "%");
+                    res = this.databaseinstance.getResults();
+                    if(res.next())country_id = res.getInt(1);
+                    else return "{\"result\": \"error\", \"data\": \"Database failed to add new country\"}";
+                }
+            }
+            catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get country\"}";}
+
+
+            this.databaseinstance.PrepareStatement("SELECT city_id FROM city WHERE city ILIKE ? LIMIT 1;");
+            this.databaseinstance.setValues(1, "%" + city + "%");
+            res = this.databaseinstance.getResults();
+            try{
+                if(res.next())city_id = res.getInt(1);
+                else{
+                    this.databaseinstance.PrepareStatement("INSERT INTO city(city, country_id) VALUES(?, ?);");
+                    this.databaseinstance.setValues(1, city);
+                    this.databaseinstance.setIntValues(2, country_id);
+                    this.databaseinstance.ExecuteUpdate();
+        
+                    this.databaseinstance.PrepareStatement("SELECT city_id FROM city WHERE city ILIKE ? LIMIT 1;");
+                    this.databaseinstance.setValues(1, "%" + city + "%");
+                    res = this.databaseinstance.getResults();
+                    if(res.next())city_id = res.getInt(1);
+                    else return "{\"result\": \"error\", \"data\": \"Database failed to add new city\"}";
+                }
+            }
+            catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get city\"}";}
+        }
+
+        int address_id = -1;
+        if(address != "" && address2 != "" && district != "" && postalcode != "" && phone != "" && city != "" && city_id != -1){
+            //get address id if not insert new address
+            this.databaseinstance.PrepareStatement("SELECT address_id FROM address WHERE " +
+            "address ILIKE ? AND address2 ILIKE ? AND district ILIKE ? AND postal_code ILIKE ? " +
+            "AND phone ILIKE ? AND city_id = ? LIMIT 1;");
+            this.databaseinstance.setValues(1, "%" + address + "%");
+            this.databaseinstance.setValues(2, "%" + address2 + "%");
+            this.databaseinstance.setValues(3, "%" + district + "%");
+            this.databaseinstance.setValues(4, "%" + postalcode + "%");
+            this.databaseinstance.setValues(5, "%" + phone + "%");
+            this.databaseinstance.setIntValues(6, city_id);
+            ResultSet res = this.databaseinstance.getResults();
+            try{
+                if(res.next())address_id = res.getInt(1);
+                else{
+                    this.databaseinstance.PrepareStatement("INSERT INTO address(address, address2, district, city_id, postal_code, phone) VALUES(?, ?, ?, ?, ?, ?);");
+                    this.databaseinstance.setValues(1, address);
+                    this.databaseinstance.setValues(2, address2);
+                    this.databaseinstance.setValues(3, district);
+                    this.databaseinstance.setIntValues(4, city_id);
+                    this.databaseinstance.setValues(5, postalcode);
+                    this.databaseinstance.setValues(6, phone);
+                    this.databaseinstance.ExecuteUpdate();
+        
+                    this.databaseinstance.PrepareStatement("SELECT address_id FROM address WHERE " +
+                    "address ILIKE ? AND address2 ILIKE ? AND district ILIKE ? AND postal_code ILIKE ? " +
+                    "AND phone ILIKE ? AND city_id = ? LIMIT 1;");
+                    this.databaseinstance.setValues(1, "%" + address + "%");
+                    this.databaseinstance.setValues(2, "%" + address2 + "%");
+                    this.databaseinstance.setValues(3, "%" + district + "%");
+                    this.databaseinstance.setValues(4, "%" + postalcode + "%");
+                    this.databaseinstance.setValues(5, "%" + phone + "%");
+                    this.databaseinstance.setIntValues(6, city_id);
+                    res = this.databaseinstance.getResults();
+                    if(res.next())address_id = res.getInt(1);
+                    else return "{\"result\": \"error\", \"data\": \"Database failed to add new address\"}";
+                }
+            }
+            catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get address\"}";}
+        }
+        
+        //add new address id for the customer id
+        if(address_id != -1){
+            this.databaseinstance.PrepareStatement("UPDATE customer SET address_id = ? WHERE customer_id = ?;");
+            this.databaseinstance.setIntValues(1, address_id);
+            this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update address\"}";
+        }
+
+        //Update store address get store id
+        if(storeaddress != ""){
+            int store_id = -1;
+            this.databaseinstance.PrepareStatement("SELECT store.store_id FROM address INNER JOIN store " +
+                "on store.address_id = address.address_id WHERE address.address ILIKE ? LIMIT 1;");
+            this.databaseinstance.setValues(1, "%" + storeaddress + "%");
+            ResultSet res = this.databaseinstance.getResults();
+            try{
+                if(res.next())store_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";
+            }
+            catch(Exception e){return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";}
+
+            this.databaseinstance.PrepareStatement("UPDATE customer SET store_id = ? WHERE customer_id = ?;");
+            this.databaseinstance.setIntValues(1, store_id);
+            this.databaseinstance.setIntValues(2, Integer.parseInt(customer_id));
+            if(!this.databaseinstance.ExecuteUpdate())return "{\"result\": \"error\", \"data\": \"Failed to update name\"}";
+        }
+
+        return "{\"result\":\"success\"," +
+                "\"data\":{"+
+                    "\"customer_id\":\""+ customer_id +"\"," +
+                    "\"first_name\":\""+ name +"\"," +
+                    "\"last_name\":\""+ surname +"\"," +
+                    "\"email\":\""+ email +"\"," +
+                    "\"active\":\""+ activestatus +"\"" +
+                "}}";
     }
 
-    public void addNewClient(String jsondata){//----???
+    public String addNewClient(String jsondata){//YYY
+        JSONObject clientdata = (JSONObject)JSONValue.parse(jsondata);
+        String name = (String)clientdata.get("name");
+        String surname = (String)clientdata.get("surname");
+        String email = (String)clientdata.get("email");
+        String activestatus = (String)clientdata.get("activestatus");
+        String city = (String)clientdata.get("city");
+        String country = (String)clientdata.get("country");
+        String district = (String)clientdata.get("district");
+        String postalcode = (String)clientdata.get("postalcode");
+        String phone = (String)clientdata.get("phone");
+        String address = (String)clientdata.get("address");
+        String address2 = (String)clientdata.get("address2");
+        String storeaddress = (String)clientdata.get("storeaddress");
 
+        //get store id
+        int store_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT store.store_id FROM address INNER JOIN store " +
+            "on store.address_id = address.address_id WHERE address.address ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + storeaddress + "%");
+        ResultSet res = this.databaseinstance.getResults();
+        try{
+            if(res.next())store_id = res.getInt(1);
+            else return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"This address does not exist\"}";}
+
+        //get country id if not insert new country
+        int country_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT country_id FROM country WHERE country ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + country + "%");
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())country_id = res.getInt(1);
+            else{
+                this.databaseinstance.PrepareStatement("INSERT INTO country(country) VALUES(?);");
+                this.databaseinstance.setValues(1, country);
+                this.databaseinstance.ExecuteUpdate();
+    
+                this.databaseinstance.PrepareStatement("SELECT country_id FROM country WHERE country ILIKE ? LIMIT 1;");
+                this.databaseinstance.setValues(1, "%" + country + "%");
+                res = this.databaseinstance.getResults();
+                if(res.next())country_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"Database failed to add new country\"}";
+            }
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get country\"}";}
+
+        //get city id if not insert new city
+        int city_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT city_id FROM city WHERE city ILIKE ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + city + "%");
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())city_id = res.getInt(1);
+            else{
+                this.databaseinstance.PrepareStatement("INSERT INTO city(city, country_id) VALUES(?, ?);");
+                this.databaseinstance.setValues(1, city);
+                this.databaseinstance.setIntValues(2, country_id);
+                this.databaseinstance.ExecuteUpdate();
+    
+                this.databaseinstance.PrepareStatement("SELECT city_id FROM city WHERE city ILIKE ? LIMIT 1;");
+                this.databaseinstance.setValues(1, "%" + city + "%");
+                res = this.databaseinstance.getResults();
+                if(res.next())city_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"Database failed to add new city\"}";
+            }
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get city\"}";}
+
+        //get address id if not insert new address
+        int address_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT address_id FROM address WHERE " +
+        "address ILIKE ? AND address2 ILIKE ? AND district ILIKE ? AND postal_code ILIKE ? " +
+        "AND phone ILIKE ? AND city_id = ? LIMIT 1;");
+        this.databaseinstance.setValues(1, "%" + address + "%");
+        this.databaseinstance.setValues(2, "%" + address2 + "%");
+        this.databaseinstance.setValues(3, "%" + district + "%");
+        this.databaseinstance.setValues(4, "%" + postalcode + "%");
+        this.databaseinstance.setValues(5, "%" + phone + "%");
+        this.databaseinstance.setIntValues(6, city_id);
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())address_id = res.getInt(1);
+            else{
+                this.databaseinstance.PrepareStatement("INSERT INTO address(address, address2, district, city_id, postal_code, phone) VALUES(?, ?, ?, ?, ?, ?);");
+                this.databaseinstance.setValues(1, address);
+                this.databaseinstance.setValues(2, address2);
+                this.databaseinstance.setValues(3, district);
+                this.databaseinstance.setIntValues(4, city_id);
+                this.databaseinstance.setValues(5, postalcode);
+                this.databaseinstance.setValues(6, phone);
+                this.databaseinstance.ExecuteUpdate();
+    
+                this.databaseinstance.PrepareStatement("SELECT address_id FROM address WHERE " +
+                "address ILIKE ? AND address2 ILIKE ? AND district ILIKE ? AND postal_code ILIKE ? " +
+                "AND phone ILIKE ? AND city_id = ? LIMIT 1;");
+                this.databaseinstance.setValues(1, "%" + address + "%");
+                this.databaseinstance.setValues(2, "%" + address2 + "%");
+                this.databaseinstance.setValues(3, "%" + district + "%");
+                this.databaseinstance.setValues(4, "%" + postalcode + "%");
+                this.databaseinstance.setValues(5, "%" + phone + "%");
+                this.databaseinstance.setIntValues(6, city_id);
+                res = this.databaseinstance.getResults();
+                if(res.next())address_id = res.getInt(1);
+                else return "{\"result\": \"error\", \"data\": \"Database failed to add new address\"}";
+            }
+        }
+        catch(Exception e){return "{\"result\": \"error\", \"data\": \"Database failed to get address\"}";}
+        
+        this.databaseinstance.PrepareStatement("INSERT INTO customer(store_id, first_name, last_name, email, address_id, activebool, active) VALUES(?, ?, ?, ?, ?, ?, ?);");
+        this.databaseinstance.setIntValues(1, store_id);
+        this.databaseinstance.setValues(2, name);
+        this.databaseinstance.setValues(3, surname);
+        this.databaseinstance.setValues(4, email);
+        this.databaseinstance.setIntValues(5, address_id);
+        this.databaseinstance.setBooleanValues(6, activestatus.equals("active") ? true : false);
+        this.databaseinstance.setIntValues(7, activestatus.equals("active") ? 1 : 0);
+        this.databaseinstance.ExecuteUpdate();
+
+        //get that clients id
+        int customer_id = -1;
+        this.databaseinstance.PrepareStatement("SELECT customer_id FROM customer WHERE store_id = ? "+
+        "AND first_name = ? AND last_name = ? AND email = ? AND address_id = ? AND activebool = ? "+
+        "AND active = ? LIMIT 1;");
+        this.databaseinstance.setIntValues(1, store_id);
+        this.databaseinstance.setValues(2, name);
+        this.databaseinstance.setValues(3, surname);
+        this.databaseinstance.setValues(4, email);
+        this.databaseinstance.setIntValues(5, address_id);
+        this.databaseinstance.setBooleanValues(6, activestatus.equals("active") ? true : false);
+        this.databaseinstance.setIntValues(7, activestatus.equals("active") ? 1 : 0);
+        res = this.databaseinstance.getResults();
+        try{
+            if(res.next())customer_id = res.getInt(1);
+            else return "{\"result\":\"error\",\"data\":\"Database failed to add new client\"}";
+        }
+        catch(Exception e){return "{\"result\":\"error\",\"data\":\"Database failed to add new client\"}";}
+
+        return "{\"result\":\"success\"," +
+                "\"data\":{"+
+                    "\"customer_id\":\""+ Integer.toString(customer_id) +"\"," +
+                    "\"first_name\":\""+ name +"\"," +
+                    "\"last_name\":\""+ surname +"\"," +
+                    "\"email\":\""+ email +"\"," +
+                    "\"active\":\""+ activestatus +"\"" +
+                "}}";
     }
 
     public String searchForClient(String attribute){//YYY
         this.databaseinstance.PrepareStatement("SELECT customer_id, first_name, last_name, email, active FROM customer " +
-            "WHERE first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? ORDER BY customer_id DESC LIMIT 24;");
+            "WHERE first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? ORDER BY customer_id DESC LIMIT 48;");
         this.databaseinstance.setValues(1, "%" + attribute + "%");
         this.databaseinstance.setValues(2, "%" + attribute + "%");
         this.databaseinstance.setValues(3, "%" + attribute + "%");
@@ -307,16 +659,16 @@ public class Controller {
         return "{" +
             "\"clients\": [" +
                 this.jsonParseResults(
-                    this.queryDBNoVal("SELECT customer_id, first_name, last_name, email, active FROM customer WHERE active = 0 ORDER BY customer_id DESC LIMIT 24;"),
+                    this.queryDBNoVal("SELECT customer_id, first_name, last_name, email, active FROM customer WHERE active = 0 ORDER BY customer_id DESC LIMIT 48;"),
                     parseType.CLIENTS)
             + "]}";
     } 
 
     private String decipherRating(String rating){
-        if(rating == "G")return "'G'::public.mpaa_rating";
-        else if(rating == "PG")return "'PG'::public.mpaa_rating";
-        else if(rating == "PG-13")return "'PG-13'::public.mpaa_rating";
-        else if(rating == "R")return "'R'::public.mpaa_rating";
+        if(rating.equals("G"))return "'G'::public.mpaa_rating";
+        else if(rating.equals("PG"))return "'PG'::public.mpaa_rating";
+        else if(rating.equals("PG-13"))return "'PG-13'::public.mpaa_rating";
+        else if(rating.equals("R"))return "'R'::public.mpaa_rating";
         else return "'NC-17'::public.mpaa_rating";
     }
 
@@ -459,11 +811,11 @@ public class Controller {
 
                 return data;
             }
-            else return "[\"ServerError1\"]";
+            else return "\"ServerError1\"";
         }
         catch(SQLException E){
             System.out.println("Error: Controller.java:69 : " + E.getMessage() + " " + ENUMVAL); 
-            return "[\"ServerError2\"]";
+            return "\"ServerError2\"";
         }
     }
 }

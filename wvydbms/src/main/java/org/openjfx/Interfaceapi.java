@@ -18,10 +18,7 @@ public class Interfaceapi {
 
     public void closeWindow(){this.DatabaseManager.closeDatabase(); this.stage.close();}
 
-    public void fillDashBoard(){
-        String staffAttribute = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
-        this.webEngine.executeScript("selectDashboardUI('"+ DatabaseManager.getDashBoardValues() +"')");
-    }
+    public void fillDashBoard(){this.webEngine.executeScript("selectDashboardUI('"+ DatabaseManager.getDashBoardValues() +"')");}
 
     public void fillStaffTab(){this.webEngine.executeScript("selectStaffTabUI('"+ DatabaseManager.getAllStaff() +"')");}
 
@@ -50,13 +47,14 @@ public class Interfaceapi {
         DatabaseManager.deleteClient(Integer.parseInt(id));
     }
 
-    public void addClient(){//NNN
-
+    public void addClient(){
+        String jsonData = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        this.webEngine.executeScript("responseToAddNewClient('"+ DatabaseManager.addNewClient(jsonData) +"')");
     }
 
-    public void updateClient(){//NNN
+    public void updateClient(){
         String jsonData = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
-        DatabaseManager.updateClient(jsonData);
+        this.webEngine.executeScript("responseToUpdateClient('"+ DatabaseManager.updateClient(jsonData) +"')");
     }
 
     public void searchForClient(){
@@ -64,4 +62,5 @@ public class Interfaceapi {
         this.webEngine.executeScript("selectNotificationALLCLIENTS('"+ DatabaseManager.searchForClient(staffAttribute) +"')");
     }
 
+    public void downloadReportPDF(){this.DatabaseManager.prepareReportPDF();}
 }

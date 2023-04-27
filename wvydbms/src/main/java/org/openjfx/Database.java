@@ -72,6 +72,15 @@ public class Database {
         catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
     }
 
+    public void setBooleanValues(int Index, boolean value){
+        if(conn == null)return;
+        try{
+            if(query == null)throw new Exception("NullPointerException: Database.java:60(query is null)");
+            query.setBoolean(Index, value);
+        }
+        catch(Exception e){ System.out.println("Error: Database.java:63 : " + e.getMessage());}
+    }
+    
     public void setArrayValues(int Index, String[] value){
         if(conn == null)return;
         try{
