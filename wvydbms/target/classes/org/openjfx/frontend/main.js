@@ -24,8 +24,8 @@ const changeSelectedTab = function(classToSelect){
     if(classToSelect === ".dashboard-tab")InterfaceAPIOBJ.fillDashBoard();
     else if(classToSelect === ".staff-tab")InterfaceAPIOBJ.fillStaffTab();
     else if(classToSelect === ".films-tab")InterfaceAPIOBJ.fillFilmTab();
-    else if(classToSelect == ".report-tab")selectReportTabUI();
-    else if(classToSelect == ".notifications-tab")selectNotificationTabUI();
+    else if(classToSelect == ".report-tab")InterfaceAPIOBJ.getAllRecords();
+    else if(classToSelect == ".notifications-tab")InterfaceAPIOBJ.selectClientsTab();
     else if(classToSelect == ".about-tab")selectAboutTabUI();
     else cleanUI();
 }
@@ -42,7 +42,7 @@ const selectDashboardUI = function(jsondata){
     mainApp.innerHTML = '<div class="dashboard-ui">'+
                             '<div class="film-count">'+
                                 '<div class="film-count-img">'+
-                                    '<img src="assets/film-count.png" alt="film-count-img"/>'+
+                                    '<img src="'+ getFilmCountImg() +'" alt="film-count-img"/>'+
                                 '</div>'+
                                 '<div class="film-count-layer_one"></div>'+
                                 '<div class="film-count-layer_two"></div>'+
@@ -53,7 +53,7 @@ const selectDashboardUI = function(jsondata){
                             '</div>'+
                             '<div class="last-added-film">'+
                                 '<div class="last-added-film-img">'+
-                                    '<img src="assets/last-added-film.png" alt="last-added-film-img"/>'+
+                                    '<img src="'+ getLastAddedFilmImg() +'" alt="last-added-film-img"/>'+
                                 '</div>'+
                                 '<div class="last-added-film-content">'+
                                     '<h3>most recently created movie</h3>'+
@@ -98,12 +98,32 @@ const selectDashboardUI = function(jsondata){
                         '</div>';
 }
 
-const clientActiveStatus = function(status){return status == 1 ? "active" : "not active";}
+const getFilmCountImg = function(){
+    const min = Math.ceil(1);
+    const max = Math.floor(3);
+    const rand = Math.floor(Math.random() * (max - min + 1) + min);
+
+    if(rand === 1)return "assets/film-count-1.png";
+    else if(rand === 2)return "assets/film-count-2.png";
+    else if(rand === 3)return "assets/film-count-3.png";
+}
+
+const getLastAddedFilmImg = function(){
+    const min = Math.ceil(1);
+    const max = Math.floor(3);
+    const rand = Math.floor(Math.random() * (max - min + 1) + min);
+
+    if(rand === 1)return "assets/last-added-film-1.png";
+    else if(rand === 2)return "assets/last-added-film-2.png";
+    else if(rand === 3)return "assets/last-added-film-3.png";
+}
+
+const clientActiveStatus = function(status){return status === 1 ? "active" : "not active";}
 
 
 
 
-const staffActiveStatus = function(status){return status == "t" ? "active" : "not active";}
+const staffActiveStatus = function(status){return status === "t" ? "active" : "not active";}
 
 const selectStaffTabUI = function(jsondata){
     const mainApp = document.querySelector(".main-app");
@@ -139,12 +159,13 @@ const populateStaffTab = function(jsonData){
     const stafftabresults = document.querySelector(".staff-tab-results");
     if(stafftabresults == null)return;
     
-    if(StaffUI__JSONDATA.staff.length === 0){
-        stafftabresults.innerHTML = "<h2 class='staff-tab-results'>no results found in database</h2>";
+    stafftabresults.innerHTML = "";
+    if(StaffUI__JSONDATA.staff.length === 0 || StaffUI__JSONDATA.staff[0] === "ServerError1" 
+        || StaffUI__JSONDATA.staff[0] === "ServerError2"){
+        stafftabresults.innerHTML = "<h2 class='staff-tab-results-text'>no results found in database</h2>";
         return;
     }
-    stafftabresults.innerHTML = "";
-
+    
     for(let i = 0; i < StaffUI__JSONDATA.staff.length; ++i){
         stafftabresults.innerHTML += '<div class="staff-element">' +
                                         '<h3 class="firstname">'+ StaffUI__JSONDATA.staff[i].first_name+'</h3>' +
@@ -189,7 +210,60 @@ const selectFilmsTabUI = function(jsonData){
                             '<div class="close-add-films-btn" onmouseup="closeAddfilm()">' +
                                 '<img src="assets/close-add-film.svg" alt="close-add-films"/>' +
                             '</div>' +
-                            '<div class="add-film-form"></div>' +
+                            '<div class="add-film-form">'+
+                                '<div class="add-film-form-inputs-container">' +
+                                    '<div>' +
+                                        '<label for="film_title">title</label>' +
+                                        '<input name="film_title" type="text" id="film_title" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_genre">genre</label>' +
+                                        '<input name="film_genre" type="text" id="film_genre" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_language">language</label>' +
+                                        '<input name="film_language" type="text" id="film_language" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_release_year">release year</label>' +
+                                        '<input name="film_release_year" type="text" id="film_release_year" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rental_duration">rental duration</label>' +
+                                        '<input name="film_rental_duration" type="text" id="film_rental_duration" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rental_rate">rental rate</label>' +
+                                        '<input name="film_rental_rate" type="text" id="film_rental_rate" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_length">length</label>' +
+                                        '<input name="film_length" type="text" id="film_length" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_replacement_cost">replacement cost</label>' +
+                                        '<input name="film_replacement_cost" type="text" id="film_replacement_cost" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_rating">rating</label>' +
+                                        '<input name="film_rating" type="text" id="film_rating" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="store_address">store address</label>' +
+                                        '<input name="store_address" type="text" id="store_address" required/>' +
+                                    '</div>' +
+                                    '<div class="film_special_features-div">' +
+                                        '<label for="film_special_features">special features format: sf 1, sf 2, ..., sf n</label>' +
+                                        '<input name="film_special_features" type="text" id="film_special_features" required/>' +
+                                    '</div>' +
+                                    '<div>' +
+                                        '<label for="film_description">description</label>' +
+                                        '<textarea name="film_description" id="film_description" required></textarea>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<h4></h4>'+
+                                '<input type="submit" onmouseup="addNewFilm()" value="Add film to database">' +
+                            '</div>' +
                         '</div>';
     populateFilmTab(jsonData);
 }
@@ -199,11 +273,12 @@ const populateFilmTab = function(jsonData){
     const filmsresults = document.querySelector(".films-results");
     if(filmsresults == null)return;
 
-    if(FilmsUI__JSONDATA.films.length === 0){
+    filmsresults.innerHTML = "";
+    if(FilmsUI__JSONDATA.films.length === 0 || FilmsUI__JSONDATA.films[0] === "ServerError1" 
+    || FilmsUI__JSONDATA.films[0] === "ServerError2"){
         filmsresults.innerHTML = "<h2 class='film-tab-results'>no results found in database</h2>";
         return;
     }
-    filmsresults.innerHTML = "";
 
     for(let i = 0; i < FilmsUI__JSONDATA.films.length; ++i){
         filmsresults.innerHTML += '<div class="film-element">' +
@@ -226,25 +301,32 @@ const populateFilmTab = function(jsonData){
 
 const getImg = function(){
     const min = Math.ceil(1);
-    const max = Math.floor(4);
+    const max = Math.floor(11);
     const rand = Math.floor(Math.random() * (max - min + 1) + min);
 
     if(rand === 1)return "assets/film1.png";
-    if(rand === 2)return "assets/film2.png";
-    if(rand === 3)return "assets/film3.png";
-    if(rand === 4)return "assets/film4.png";
+    else if(rand === 2)return "assets/film2.png";
+    else if(rand === 3)return "assets/film3.png";
+    else if(rand === 4)return "assets/film4.png";
+    else if(rand === 5)return "assets/film5.png";
+    else if(rand === 6)return "assets/film6.png";
+    else if(rand === 7)return "assets/film7.png";
+    else if(rand === 8)return "assets/film8.png";
+    else if(rand === 9)return "assets/film9.png";
+    else if(rand === 10)return "assets/film10.png";
+    else if(rand === 11)return "assets/film11.png";
 }
 
 
 
 
-const selectReportTabUI = function(){
+const selectReportTabUI = function(jsonData){
     const mainApp = document.querySelector(".main-app");
     mainApp.innerHTML = '<div class="report-tab-ui">' +
                     '<div class="report-tab-header">' +
                         '<div class="report-tab-main-header">' +
                             '<h2>report</h2>' +
-                            '<div class="download-btn">' +
+                            '<div class="download-btn" onmouseup="downloadReportAsPDF()">' +
                                 '<img src="assets/download.svg" alt="download"/>' +
                             '</div>' +
                         '</div>' +
@@ -254,14 +336,50 @@ const selectReportTabUI = function(){
                             '<h4>number of movies</h4>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="report-tab-results">' +
-                        '<div class="report-tab-element">' +
-                            '<h2>Lorem ipsem doe rosje shue euihe euhgtfe ruuudg shhhsv d</h2>' +
-                            '<h3>horror</h3>' +
-                            '<h4>34400</h4>' +
-                        '</div>' +
-                    '</div>' +
+                    '<div class="report-tab-results"></div>' +
                 '</div>';
+
+    populateReportTab(jsonData);
+}
+
+const populateReportTab = function(jsonData){
+    const Report__JSONDATA = JSON.parse(jsonData);
+    const reportresults = document.querySelector(".report-tab-results");
+    if(reportresults == null)return;
+
+    reportresults.innerHTML = "";
+    if(Report__JSONDATA.records.length === 0 || Report__JSONDATA.records[0] === "ServerError1" 
+        || Report__JSONDATA.records[0] === "ServerError2"){
+        reportresults.innerHTML = "<h2 class='report-tab-results'>no results found in database</h2>";
+        return;
+    }
+
+    for(let i = 0; i < Report__JSONDATA.records.length; ++i){
+        reportresults.innerHTML += '<div class="report-tab-element">' +
+                                        '<h2>'+ Report__JSONDATA.records[i].workplaceAddress +'</h2>' +
+                                        '<h3>'+ Report__JSONDATA.records[i].genre +'</h3>' +
+                                        '<h4>'+ Report__JSONDATA.records[i].count +'</h4>' +
+                                    '</div>';
+    }
+}
+
+const downloadReportAsPDF = function(){InterfaceAPIOBJ.downloadReportPDF();}
+
+
+
+
+
+
+const selectAllClients = function(){
+    const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
+    if(selectedSubTab != null && selectedSubTab.classList.contains("all-clients"))return;
+    InterfaceAPIOBJ.fillClientsTab();
+}
+
+const selectDroppedSub = function(){
+    const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
+    if(selectedSubTab != null && selectedSubTab.classList.contains("dropped-rental"))return;
+    InterfaceAPIOBJ.droppedRentalSub();
 }
 
 const selectNotificationTabUI = function(){
@@ -269,9 +387,12 @@ const selectNotificationTabUI = function(){
     mainApp.innerHTML = '<div class="notifications-tab-ui">' +
                             '<div class="notifications-tab-heading">' +
                                 '<h2>notifications</h2>' +
-                                '<h3 class="all-clients notifications-tab-currently-selected" onmouseup="selectNotificationALLCLIENTS(false)">all clients</h3>' +
-                                '<h3 class="dropped-rental" onmouseup="selectNotificationDROPPEDRENTAL()">dropped rental</h3>' +
-                                '<input type="text" placeholder="Search for attribute..."/>' +
+                                '<h3 class="all-clients" onmouseup="selectAllClients()">all clients</h3>' +
+                                '<h3 class="dropped-rental" onmouseup="selectDroppedSub()">dropped rental</h3>' +
+                                '<input type="text" placeholder="Search for attribute..." id="clientSearchAttribute"/>' +
+                                '<div class="search-client-btn" onmouseup="searchClient()">' +
+                                    '<img src="assets/search.svg" alt="search-client-btn"/>' +
+                                '</div>' +
                                 '<div class="add-client-btn" onmouseup="openAddClient()">' +
                                     '<img src="assets/add-data.svg" alt="add-client-btn"/>' +
                                 '</div>' +
@@ -282,27 +403,58 @@ const selectNotificationTabUI = function(){
                                     '<img src="assets/close-add-film.svg" alt="close-add-client-btn"/>' +
                                 '</div>' +
                                 '<div class="add-client-form">' +
-                                    '<form action="" onsubmit="return addNewClientToDatabase()">' +
-                                        '<div class="add-client-form-inputs-container">' +
-                                            '<div>' +
-                                                '<label for="name">name</label>' +
-                                                '<input name="name" type="text" id="name" required/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="surname">surname</label>' +
-                                                '<input name="surname" type="text" id="surname" required/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="email">email</label>' +
-                                                '<input name="eamil" type="text" id="email" required/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="activestatus">active status</label>' +
-                                                '<input name="activestatus" type="text" id="activestatus" required/>' +
-                                            '</div>' +
+                                    '<div class="add-client-form-inputs-container">' +
+                                        '<div>' +
+                                            '<label for="name">name</label>' +
+                                            '<input name="name" type="text" id="name" required/>' +
                                         '</div>' +
-                                        '<input type="submit" value="Add client to database">' +
-                                    '</form>' +
+                                        '<div>' +
+                                            '<label for="surname">surname</label>' +
+                                            '<input name="surname" type="text" id="surname" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="email">email</label>' +
+                                            '<input name="eamil" type="text" id="email" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="activestatus">active status</label>' +
+                                            '<input name="activestatus" type="text" id="activestatus" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="store_address">store address</label>' +
+                                            '<input name="store_address" type="text" id="store_address" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="country">country</label>' +
+                                            '<input name="country" type="text" id="country" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="city">city</label>' +
+                                            '<input name="city" type="text" id="city" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="district">district</label>' +
+                                            '<input name="district" type="text" id="district" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="postal_code">postal code</label>' +
+                                            '<input name="postal_code" type="text" id="postal_code" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="phone">phone</label>' +
+                                            '<input name="phone" type="text" id="phone" required/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address">address</label>' +
+                                            '<textarea name="address" id="address" required></textarea>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address2">address 2</label>' +
+                                            '<textarea name="address2" id="address2" required></textarea>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<h4></h4>' +
+                                    '<input type="submit" onmouseup="addNewClientToDatabase()" value="Add client to database">' +
                                 '</div>' +
                             '</div>' +
                             '<div class="notifications-tab-edit-client-dialogue">' +
@@ -310,90 +462,141 @@ const selectNotificationTabUI = function(){
                                     '<img src="assets/close-add-film.svg" alt="close-edit-client-btn"/>' +
                                 '</div>' +
                                 '<div class="edit-client-form">' +
-                                    '<form action="" onsubmit="return upDateClientDataDatabase()">' +
-                                        '<div class="edit-client-form-inputs-container">' +
-                                            '<div>' +
-                                                '<label for="nameoptional">name(optional)</label>' +
-                                                '<input name="nameoptional" type="text" id="nameoptional"/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="surnameoptional">surname(optional)</label>' +
-                                                '<input name="surnameoptional" type="text" id="surnameoptional"/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="emailoptional">email(optional)</label>' +
-                                                '<input name="eamiloptional" type="text" id="emailoptional"/>' +
-                                            '</div>' +
-                                            '<div>' +
-                                                '<label for="activestatusoptional">active status(optional)</label>' +
-                                                '<input name="activestatusoptional" type="text" id="activestatusoptional"/>' +
-                                            '</div>' +
+                                    '<div class="edit-client-form-inputs-container">' +
+                                        '<div>' +
+                                            '<label for="name_optional">name(optional)</label>' +
+                                            '<input name="name_optional" type="text" id="name_optional"/>' +
                                         '</div>' +
-                                        '<input type="submit" value="update client info">' +
-                                    '</form>' +
+                                        '<div>' +
+                                            '<label for="surname_optional">surname(optional)</label>' +
+                                            '<input name="surname_optional" type="text" id="surname_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="email_optional">email(optional)</label>' +
+                                            '<input name="email_optional" type="text" id="email_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="activestatus_optional">active status(optional)</label>' +
+                                            '<input name="activestatus_optional" type="text" id="activestatus_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="store_address_optional">store address(optional)</label>' +
+                                            '<input name="store_address_optional" type="text" id="store_address_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="country_optional">country(optional)</label>' +
+                                            '<input name="country_optional" type="text" id="country_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="city_optional">city(optional)</label>' +
+                                            '<input name="city_optional" type="text" id="city_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="district_optional">district(optional)</label>' +
+                                            '<input name="district_optional" type="text" id="district_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="postal_code_optional">postal code(optional)</label>' +
+                                            '<input name="postal_code_optional" type="text" id="postal_code_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="phone_optional">phone(optional)</label>' +
+                                            '<input name="phone_optional" type="text" id="phone_optional"/>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address_optional">address(optional)</label>' +
+                                            '<textarea name="address_optional" id="address_optional"></textarea>' +
+                                        '</div>' +
+                                        '<div>' +
+                                            '<label for="address2_optional">address 2(optional)</label>' +
+                                            '<textarea name="address2_optional" id="address2_optional"></textarea>' +
+                                        '</div>' +
+                                        '<h4>Leave a field empty if you don\'t want to update it</h4>' +
+                                        '<input type="submit" onmouseup="upDateClientDataDatabase()" value="update client info">' +
+                                    '</div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>';
-    selectNotificationALLCLIENTS(true);
 }
 
-const selectNotificationALLCLIENTS = function(overRideReturn){
+const selectNotificationALLCLIENTS = function(jsonData){
     const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
     const thisSubTab = document.querySelector(".all-clients");
     const resultsDiv = document.querySelector(".notifications-tab-results");
     
-    if(thisSubTab == null || selectedSubTab == null || resultsDiv == null)return;
-    if(thisSubTab.classList.contains("notifications-tab-currently-selected") && !overRideReturn)return;
-    selectedSubTab.classList.remove("notifications-tab-currently-selected");
-    thisSubTab.classList.add("notifications-tab-currently-selected");
+    if(resultsDiv == null)return;
+    if(selectedSubTab != null)selectedSubTab.classList.remove("notifications-tab-currently-selected");
+    if(thisSubTab != null)thisSubTab.classList.add("notifications-tab-currently-selected");
 
     resultsDiv.innerHTML = "";
+    const Clients__JSONDATA = JSON.parse(jsonData);
+    if(Clients__JSONDATA.clients.length === 0 || Clients__JSONDATA.clients[0] === "ServerError1" 
+    || Clients__JSONDATA.clients[0] === "ServerError2"){
+        resultsDiv.innerHTML = "<h2 class='all-clients-results'>no results found in database</h2>";
+        return;
+    }
 
-    resultsDiv.innerHTML += '<div class="client-element" id="client1">' +
-                                '<div class="client-details">' +
-                                    '<h2>Name: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Surname: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Email: wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h2>Active status: active</h2>' +
-                                '</div>' +
-                                '<div class="client-methods">' +
-                                    '<div class="edit-client-btn" onmouseup="openEditClient(\'client1\')">' +
-                                        '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+    for(let i = 0; i < Clients__JSONDATA.clients.length; ++i){
+        resultsDiv.innerHTML += '<div class="client-element" id="'+ Clients__JSONDATA.clients[i].customer_id +'">' +
+                                    '<div class="client-details">' +
+                                        '<h2>Name: '+ Clients__JSONDATA.clients[i].first_name +'</h2>' +
+                                        '<h2>Surname: '+ Clients__JSONDATA.clients[i].last_name +'</h2>' +
+                                        '<h2>Email: '+ Clients__JSONDATA.clients[i].email +'</h2>' +
+                                        '<h2>Active status: '+ clientActiveStatus(Clients__JSONDATA.clients[i].active) +'</h2>' +
                                     '</div>' +
-                                    '<div class="delete-client-btn" onmouseup="deleteClient(\'client1\')">' +
-                                        '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                                    '<div class="client-methods">' +
+                                        '<div class="edit-client-btn" onmouseup="openEditClient(\''+ Clients__JSONDATA.clients[i].customer_id +'\')">' +
+                                            '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+                                        '</div>' +
+                                        '<div class="delete-client-btn" onmouseup="deleteClient(\''+ Clients__JSONDATA.clients[i].customer_id +'\')">' +
+                                            '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                                        '</div>' +
                                     '</div>' +
-                                '</div>' +
-                            '</div>';
+                                '</div>';
+    }
 }
 
-const selectNotificationDROPPEDRENTAL = function(){
+const selectNotificationDROPPEDRENTAL = function(jsonData){
     const selectedSubTab = document.querySelector(".notifications-tab-currently-selected");
     const thisSubTab = document.querySelector(".dropped-rental");
     const resultsDiv = document.querySelector(".notifications-tab-results");
 
-    if(thisSubTab == null || selectedSubTab == null || resultsDiv == null)return;
-    if(thisSubTab.classList.contains("notifications-tab-currently-selected"))return;
-    selectedSubTab.classList.remove("notifications-tab-currently-selected");
-    thisSubTab.classList.add("notifications-tab-currently-selected");
+    if(resultsDiv == null)return;
+    if(selectedSubTab != null)selectedSubTab.classList.remove("notifications-tab-currently-selected");
+    if(thisSubTab != null)thisSubTab.classList.add("notifications-tab-currently-selected");
 
     resultsDiv.innerHTML = "";
-
+    const Clients__JSONDATA = JSON.parse(jsonData);
+    
     resultsDiv.innerHTML += '<div class="dropped-rental-sub-headers">' +
-                                '<h2>name</h2>' +
-                                '<h2>surname</h2>' +
-                                '<h3>email</h3>' +
-                                '<h2>active status</h2>' +
-                            '</div>' +
-                            '<div class="dropped-rental-sub-results">' +
-                                '<div class="dropped-rental-sub-element">' +
-                                    '<h2>wufug efewbire bweiiheuiw whuweui</h2>' +
-                                    '<h3>wufug efewbire bweiiheuiw whuweui</h3>' +
-                                    '<h4>wufug efewbire bweiiheuiw whuweui</h4>' +
-                                    '<h5>active</h5>' +
+                                    '<h2>name</h2>' +
+                                    '<h2>surname</h2>' +
+                                    '<h3>email</h3>' +
+                                    '<h2>active status</h2>' +
                                 '</div>' +
-                            '</div>';
+                                '<div class="dropped-rental-sub-results"></div>';
+    const rentalresultsDiv = document.querySelector(".dropped-rental-sub-results");
+    if(rentalresultsDiv == null)return;
+
+    if(Clients__JSONDATA.clients.length === 0 || Clients__JSONDATA.clients[0] === "ServerError1" 
+    || Clients__JSONDATA.clients[0] === "ServerError2"){
+        rentalresultsDiv.innerHTML = "<h2 class='dropped-rental-clients-results'>no results found in database</h2>";
+        return;
+    }
+
+    for(let i = 0; i < Clients__JSONDATA.clients.length; ++i){
+        rentalresultsDiv.innerHTML += '<div class="dropped-rental-sub-element">' +
+                                        '<h2>'+ Clients__JSONDATA.clients[i].first_name +'</h2>' +
+                                        '<h3>'+ Clients__JSONDATA.clients[i].last_name +'</h3>' +
+                                        '<h4>'+ Clients__JSONDATA.clients[i].email +'</h4>' +
+                                        '<h5>'+ clientActiveStatus(Clients__JSONDATA.clients[i].active) +'</h5>' +
+                                    '</div>';
+    }
 }
+
+
+
+
 
 const selectAboutTabUI = function(){
     const mainApp = document.querySelector(".main-app");
@@ -409,6 +612,10 @@ const selectAboutTabUI = function(){
                 '</div>';
 }
 
+
+
+
+
 const openAddFilm = function(){
     if(document.querySelector(".add-new-film-form"))
         document.querySelector(".add-new-film-form").style.display = "block";
@@ -418,6 +625,127 @@ const closeAddfilm = function(){
     if(document.querySelector(".add-new-film-form"))
         document.querySelector(".add-new-film-form").style.display = "none";
 }
+
+const addNewFilm = function(){
+    const title = document.getElementById("film_title");//'Chamber Italian' max 255 characters
+    const genre = document.getElementById("film_genre");//'Action' max 25 characters
+    const lang = document.getElementById("film_language");//'English' max 20 characters
+    const release = document.getElementById("film_release_year");//optional - year number between 0000 and 9999
+    const rentaldur = document.getElementById("film_rental_duration");//number between -32768 and 32768
+    const rentalrate = document.getElementById("film_rental_rate");//number between -9999.99 and 9999.99
+    const len = document.getElementById("film_length");//optional - number between -32768 and 32768
+    const replacementcost = document.getElementById("film_replacement_cost");//number between -99999.99 and 99999.99
+    const rating = document.getElementById("film_rating");//either 'G','PG','PG-13','R','NC-17'
+    const specialfeatures = document.getElementById("film_special_features");//'{Trailers}'
+    const description = document.getElementById("film_description");//optional - max 65535  characters
+    const storeaddress = document.getElementById("store_address");
+
+    const errorContext = document.querySelector(".add-film-form h4");
+
+    if(title === null || genre === null || lang === null || release === null 
+        || rentaldur === null || len === null || rentalrate === null ||
+        replacementcost === null || rating === null || specialfeatures === null
+        || description === null || storeaddress === null){
+            if(errorContext !== null)errorContext.innerHTML = "An error occurred with the application";
+            return;
+    }
+
+    if(title.value === "" || genre.value === "" || lang.value === "" || release.value === "" 
+        || rentaldur.value === "" || len.value === "" || rentalrate.value === "" ||
+        replacementcost.value === "" || rating.value === "" || specialfeatures.value === ""
+        || description.value === "" || storeaddress.value === ""){
+            if(errorContext !== null)errorContext.innerHTML = "No fields on the form can be empty";
+            return;
+    }
+
+    if(title.value.length > 128){
+        errorContext.innerHTML = "Title must be less than  or equal to 128 characters";
+        return;
+    }
+    if(!(release.value >= 0000 && release.value <= 3000)){
+        errorContext.innerHTML = "Release year must be between 0000 and 3000";
+        return;
+    }
+    if(!(rentaldur.value >= 0 && rentaldur.value <= 255)){
+        errorContext.innerHTML = "Rental duration must be between 0 and 255";
+        return;
+    }
+    if(!(rentalrate.value >= 0.00 && rentalrate.value <= 99.99)){
+        errorContext.innerHTML = "Rental rate must be between 0.00 and 99.99";
+        return;
+    }
+    if(!(len.value >= -32768 && len.value <= 32768)){
+        errorContext.innerHTML = "Length of film must be between -32768 and 32768";
+        return;
+    }
+    if(!(replacementcost.value >= 0.00 && replacementcost.value <= 999.99)){
+        errorContext.innerHTML = "Replacement cost must be between 0.00 and 999.99";
+        return;
+    }
+    if(rating.value !== "G" && rating.value !== "PG" && rating.value !== "PG-13" && rating.value !== "R" && rating.value !== "NC-17"){
+        errorContext.innerHTML = "Rating can only be between: 'G','PG','PG-13','R','NC-17'";
+        return;
+    }
+    if(!specialfeatures.value.includes("Trailers") && !specialfeatures.value.includes("Commentaries") 
+        && !specialfeatures.value.includes("Deleted Scenes") && !specialfeatures.value.includes("Behind the Scenes")){
+            errorContext.innerHTML = "Special features can only include: 'Trailers','Commentaries','Deleted Scenes' or 'Behind the Scenes'";
+            return;
+    }
+    if(description.value.length > 65535){
+        errorContext.innerHTML = "Description must be less than  or equal to 65535 characters";
+        return;
+    }
+        
+    JAVA__READABLE__TEXT = "{" +
+                                "\"title\":\"" + title.value + "\"," +
+                                "\"genre\":\"" + genre.value + "\"," +
+                                "\"language\":\"" + lang.value + "\"," +
+                                "\"release_year\":" + release.value + "," +
+                                "\"rental_duration\":" + rentaldur.value + "," +
+                                "\"length\":" + len.value + "," +
+                                "\"rental_rate\":" + rentalrate.value + "," +
+                                "\"replacement_cost\":" + replacementcost.value + "," +
+                                "\"rating\":\"" + rating.value + "\"," +
+                                "\"special_features\":\"" + specialfeatures.value + "\"," +
+                                "\"description\":\"" + description.value + "\"," +
+                                "\"storeaddress\":\"" + storeaddress.value + "\"," +
+                            "}";
+    InterfaceAPIOBJ.addFilmFunc();
+}
+
+const responseToAddNewFilm = function(jsonData){
+    const res = JSON.parse(jsonData);
+
+    if(res.result == "error"){
+        const errorContext = document.querySelector(".add-film-form h4");
+        errorContext.innerHTML = res.data;
+    }
+    else{
+        const filmsresults = document.querySelector(".films-results");
+        if(filmsresults == null)return;
+
+        const newFilmElement = document.createElement("div");
+        newFilmElement.className = "film-element";
+        newFilmElement.innerHTML = '<div class="film-element-img">' +
+                                        '<img src="'+ getImg() +'" alt="film-element-img"/>' +
+                                    '</div>' +
+                                    '<div class="film-element-layer_one"></div>' +
+                                    '<div class="film-element-layer_two"></div>' +
+                                    '<div class="film-element-content">' +
+                                        '<h3>'+ res.data.title +'</h3>' +
+                                        '<h2>'+ res.data.len +' mins</h2>' +
+                                        '<div class="film-element-divider">' +
+                                            '<h4>'+ res.data.release +'</h4>' +
+                                            '<h4>'+ res.data.rating +'</h4>' +
+                                        '</div>' +
+                                    '</div>';
+        filmsresults.insertBefore(newFilmElement, filmsresults.children[0]);
+        closeAddfilm();
+    }
+}
+
+
+
 
 const openAddClient = function(){
     if(document.querySelector(".notifications-tab-add-client-dialogue"))
@@ -441,11 +769,226 @@ const closeEditClient = function(){
     currentlyEditingClientID = "";
 }
 
+
+
+
 const deleteClient = function(id){
     const clientEl = document.getElementById(id);
     if(clientEl != null)clientEl.remove();
 
-    //perform backend delete;
+    JAVA__READABLE__TEXT = id;
+    InterfaceAPIOBJ.deleteClient();
+}
+
+const addNewClientToDatabase = function(){
+    const name = document.getElementById("name");//max 45 characters
+    const surname = document.getElementById("surname");//max 45 characters
+    const email = document.getElementById("email");//max 50 characters
+    const activestatus = document.getElementById("activestatus");//active | not active
+    const store_address = document.getElementById("store_address");//
+    const city = document.getElementById("city");//max 50 characters
+    const country = document.getElementById("country");//max 50 characters
+    const district = document.getElementById("district");//max 20 characters
+    const postal_code = document.getElementById("postal_code");//max 10 characters
+    const phone = document.getElementById("phone");//max 20 characters
+    const address = document.getElementById("address");//max 50 characters
+    const address2 = document.getElementById("address2");//max 50 characters
+
+    const errorContext = document.querySelector(".add-client-form h4");
+    if(name === null || surname === null || email === null || activestatus === null
+        || store_address === null || city === null || country === null || district === null
+        || postal_code === null || phone === null || address === null || address2 === null){
+            errorContext.innerHTML = "Error setting up the form";
+            return;
+    }
+
+    if(name.value === "" || surname.value === "" || email.value === "" || activestatus.value === ""
+        || store_address.value === "" || city.value === "" || country.value === "" || district.value === ""
+        || phone.value === "" || address.value === ""){
+            errorContext.innerHTML = "No values may be empty except address 2 and postal code";
+            return;
+    }
+
+    if(name.value.length > 45){errorContext.innerHTML = "Name may not be more than 45 characters long";  return;}
+    if(surname.value.length > 45){errorContext.innerHTML = "Surname may not be more than 45 characters long";  return;}
+    if(email.value.length > 50){errorContext.innerHTML = "Email may not be more than 50 characters long";  return;}
+    if(activestatus.value !== "active" && activestatus.value !== "not active"){
+        errorContext.innerHTML = "Active status should either be active or not active";
+        return;
+    }
+    if(city.value.length > 50){errorContext.innerHTML = "City may not be more than 50 characters long"; return;}
+    if(country.value.length > 50){errorContext.innerHTML = "Country may not be more than 50 characters long"; return;}
+    if(district.value.length > 20){errorContext.innerHTML = "District may not be more than 20 characters long"; return;}
+    if(postal_code.value.length > 10){errorContext.innerHTML = "Postal code may not be more than 10 characters long"; return;}
+    if(phone.value.length > 20){errorContext.innerHTML = "Phone may not be more than 20 characters long"; return;}
+    if(address.value.length > 50){errorContext.innerHTML = "Address may not be more than 50 characters long"; return;}
+    if(address2.value.length > 50){errorContext.innerHTML = "Address 2 may not be more than 50 characters long"; return;}
+
+    JAVA__READABLE__TEXT = "{" +
+                                "\"name\":\"" + name.value + "\"," +
+                                "\"surname\":\"" + surname.value + "\"," +
+                                "\"email\":\"" + email.value + "\"," +
+                                "\"activestatus\":\"" + activestatus.value + "\"," +
+                                "\"city\":\"" + city.value + "\"," +
+                                "\"country\":\"" + country.value + "\"," +
+                                "\"district\":\"" + district.value + "\"," +
+                                "\"postalcode\":\"" + postal_code.value + "\"," +
+                                "\"phone\":\"" + phone.value + "\"," +
+                                "\"address\":\"" + address.value + "\"," +
+                                "\"address2\":\"" + address2.value + "\"," +
+                                "\"storeaddress\":\"" + store_address.value + "\"," +
+                            "}";
+    InterfaceAPIOBJ.addClient();
+}
+
+const responseToAddNewClient = function(jsonData){
+    const res = JSON.parse(jsonData);
+
+    if(res.result == "error"){
+        const errorContext = document.querySelector(".add-client-form h4");
+        errorContext.innerHTML = res.data;
+    }
+    else{
+        const resultsDiv = document.querySelector(".notifications-tab-results");
+        if(resultsDiv == null)return;
+
+        const newClientElement = document.createElement("div");
+        newClientElement.className = "client-element";
+        newClientElement.id = res.data.customer_id;
+        newClientElement.innerHTML = '<div class="client-details">' +
+                                        '<h2>Name: '+ res.data.first_name +'</h2>' +
+                                        '<h2>Surname: '+ res.data.last_name +'</h2>' +
+                                        '<h2>Email: '+ res.data.email +'</h2>' +
+                                        '<h2>Active status: '+ res.data.active +'</h2>' +
+                                    '</div>' +
+                                    '<div class="client-methods">' +
+                                        '<div class="edit-client-btn" onmouseup="openEditClient(\''+ res.data.customer_id +'\')">' +
+                                            '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+                                        '</div>' +
+                                        '<div class="delete-client-btn" onmouseup="deleteClient(\''+ res.data.customer_id +'\')">' +
+                                            '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                                        '</div>' +
+                                    '</div>';
+        resultsDiv.insertBefore(newClientElement, resultsDiv.children[0]);
+        closeAddClient();
+    }
+}
+
+const upDateClientDataDatabase = function(){
+    const name = document.getElementById("name_optional");//max 45 characters
+    const surname = document.getElementById("surname_optional");//max 45 characters
+    const email = document.getElementById("email_optional");//max 50 characters
+    const activestatus = document.getElementById("activestatus_optional");//active | not active
+    const store_address = document.getElementById("store_address_optional");//
+    const city = document.getElementById("city_optional");//max 50 characters
+    const country = document.getElementById("country_optional");//max 50 characters
+    const district = document.getElementById("district_optional");//max 20 characters
+    const postal_code = document.getElementById("postal_code_optional");//max 10 characters
+    const phone = document.getElementById("phone_optional");//max 20 characters
+    const address = document.getElementById("address_optional");//max 50 characters
+    const address2 = document.getElementById("address2_optional");//max 50 characters
+    const customer_id = currentlyEditingClientID;
+
+    const errorContext = document.querySelector(".edit-client-form h4");
+    if(name === null || surname === null || email === null || activestatus === null
+        || store_address === null || city === null || country === null || district === null
+        || postal_code === null || phone === null || address === null || address2 === null){
+            errorContext.innerHTML = "Error setting up the form";
+            return;
+    }
+
+    if(name.value === "" && surname.value === "" && email.value === "" && activestatus.value === ""
+        && store_address.value === "" && city.value === "" && country.value === "" && district.value === ""
+        && postal_code.value === "" && phone.value === "" && address.value === "" && address2.value === ""){
+            errorContext.innerHTML = "At least one value should be updated";
+            return;
+    }
+
+    if(customer_id == ""){
+        errorContext.innerHTML = "Customer id has not been set";
+        return;
+    }
+
+    if((city.value === "" && country.value !== "") || (city.value !== "" && country.value === "")){
+        errorContext.innerHTML = "If city is set, country has to be set too and vice versa";
+        return;
+    }
+
+    if(city.value !== "" && (district.value !== "" || postal_code.value !== "" || phone.value !== ""
+        || address.value !== "" || address2.value !== "")){
+        errorContext.innerHTML = "If any one of city, district, postal code, phone, address, or address2 are set, then all of these have to be set";
+        return;
+    }
+
+    if(name.value.length > 45){errorContext.innerHTML = "Name may not be more than 45 characters long";  return;}
+    if(surname.value.length > 45){errorContext.innerHTML = "Surname may not be more than 45 characters long";  return;}
+    if(email.value.length > 50){errorContext.innerHTML = "Email may not be more than 50 characters long";  return;}
+    if(activestatus.value !== "" && activestatus.value !== "active" && activestatus.value !== "not active"){
+        errorContext.innerHTML = "Active status should either be active or not active";
+        return;
+    }
+    if(city.value.length > 50){errorContext.innerHTML = "City may not be more than 50 characters long"; return;}
+    if(country.value.length > 50){errorContext.innerHTML = "Country may not be more than 50 characters long"; return;}
+    if(district.value.length > 20){errorContext.innerHTML = "District may not be more than 20 characters long"; return;}
+    if(postal_code.value.length > 10){errorContext.innerHTML = "Postal code may not be more than 10 characters long"; return;}
+    if(phone.value.length > 20){errorContext.innerHTML = "Phone may not be more than 20 characters long"; return;}
+    if(address.value.length > 50){errorContext.innerHTML = "Address may not be more than 50 characters long"; return;}
+    if(address2.value.length > 50){errorContext.innerHTML = "Address 2 may not be more than 50 characters long"; return;}
+
+    JAVA__READABLE__TEXT = "{" +
+                                "\"customer_id\":\"" + customer_id + "\"," +
+                                "\"name\":\"" + name.value + "\"," +
+                                "\"surname\":\"" + surname.value + "\"," +
+                                "\"email\":\"" + email.value + "\"," +
+                                "\"activestatus\":\"" + activestatus.value + "\"," +
+                                "\"city\":\"" + city.value + "\"," +
+                                "\"country\":\"" + country.value + "\"," +
+                                "\"district\":\"" + district.value + "\"," +
+                                "\"postalcode\":\"" + postal_code.value + "\"," +
+                                "\"phone\":\"" + phone.value + "\"," +
+                                "\"address\":\"" + address.value + "\"," +
+                                "\"address2\":\"" + address2.value + "\"," +
+                                "\"storeaddress\":\"" + store_address.value + "\"," +
+                            "}";
+    InterfaceAPIOBJ.updateClient();
+}
+
+const responseToUpdateClient = function(jsonData){
+    const res = JSON.parse(jsonData);
+
+    if(res.result == "error"){
+        const errorContext = document.querySelector(".edit-client-form h4");
+        errorContext.innerHTML = res.data;
+    }
+    else{
+        const el = document.getElementById(res.data.customer_id);
+        if(el == null)return;
+
+        const clientdet = document.querySelectorAll("#" + CSS.escape(res.data.customer_id) + " .client-details h2");
+
+        el.innerHTML = '<div class="client-details">' +
+                            '<h2>'+ getNonEmptyString(res.data.first_name, clientdet.item(0).innerHTML, "Name: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.last_name, clientdet.item(1).innerHTML, "Surname: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.email, clientdet.item(2).innerHTML, "Email: ") +'</h2>' +
+                            '<h2>'+ getNonEmptyString(res.data.active, clientdet.item(3).innerHTML, "Active status: ") +'</h2>' +
+                        '</div>' +
+                        '<div class="client-methods">' +
+                            '<div class="edit-client-btn" onmouseup="openEditClient(\''+ res.data.customer_id +'\')">' +
+                                '<img src="assets/edit-client.svg" alt="edit-client-btn"/>' +
+                            '</div>' +
+                            '<div class="delete-client-btn" onmouseup="deleteClient(\''+ res.data.customer_id +'\')">' +
+                                '<img src="assets/delete-client.svg" alt="delete-client-btn"/>' +
+                            '</div>' +
+                        '</div>';
+        closeEditClient();
+    }
+}
+
+const getNonEmptyString = function(val1, val2, appendval){return val1 === "" ? val2 : appendval + val1;}
+
+const searchClient = function(){
+    JAVA__READABLE__TEXT = document.getElementById("clientSearchAttribute").value;
+    InterfaceAPIOBJ.searchForClient();
 }
 
 const cleanUI = function(){document.querySelector(".main-app").innerHTML = "";}
