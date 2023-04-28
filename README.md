@@ -50,3 +50,6 @@ If you have any trouble setting this application up and need clearer guidance/in
 # Other forms of setup instructions
 1. VS code's official setup instructions: https://code.visualstudio.com/docs/java/java-gui
 2. Javafx's official setup instructions: https://openjfx.io/openjfx-docs/
+
+## See more details about this project here:
+https://github.com/waveyboym/WVY-DBMS/blob/main/results.md
