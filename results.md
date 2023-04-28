@@ -2,7 +2,7 @@
 
 Date : 2023-04-28 22:16:57
 
-Directory c:\\Users\\User\\Documents\\Modules\\Year 2 Semester 1\\COS 221 Notes\\practicals\\practical 4\\project folder\\wvydbms
+Directory c:\\wvydbms
 
 Total : 53 files,  5600 codes, 155 comments, 857 blanks, all 6612 lines
 
