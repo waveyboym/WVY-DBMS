@@ -39,6 +39,23 @@ public class Controller {
 
     public void closeDatabase(){this.databaseinstance.close();}
 
+    public void prepareANDsendEmailToAllClients(String emailbodyJSON){
+        JSONObject clientdata = (JSONObject)JSONValue.parse(emailbodyJSON);
+        String emailbody = (String)clientdata.get("emailbody");
+        this.databaseinstance.PrepareStatement("SELECT email FROM customer LIMIT 1;");
+        ResultSet results = this.databaseinstance.getResults();
+        try{
+            while(results.next()){
+                String email = results.getString("email");
+                //send email with its body
+                System.out.println("email: " + email);
+                System.out.println("body: " + emailbody);
+            }
+        }
+        catch(Exception e){System.out.println(e.getMessage()); return;}
+        System.out.println("Successfully sent emails");
+    }
+
     public void prepareReportPDF(){
         /*
         * $Id: Tables.java 3373 2008-05-12 16:21:24Z xlv $

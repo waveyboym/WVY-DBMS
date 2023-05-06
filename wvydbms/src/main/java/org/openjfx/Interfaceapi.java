@@ -63,4 +63,9 @@ public class Interfaceapi {
     }
 
     public void downloadReportPDF(){this.DatabaseManager.prepareReportPDF();}
+
+    public void sendEmailToAllClients(){
+        String emailbodyJSON = (String) webEngine.executeScript("JAVA__READABLE__TEXT;");
+        this.DatabaseManager.prepareANDsendEmailToAllClients(emailbodyJSON);
+    }
 }
