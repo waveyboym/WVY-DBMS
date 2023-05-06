@@ -382,6 +382,86 @@ const selectDroppedSub = function(){
     InterfaceAPIOBJ.droppedRentalSub();
 }
 
+const selectAddNewClient = function(){
+    const addclientform = document.querySelector(".add-client-form");
+    addclientform.innerHTML = '<div class="add-client-form-inputs-container">' +
+                                '<div>' +
+                                    '<label for="name">name</label>' +
+                                    '<input name="name" type="text" id="name" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="surname">surname</label>' +
+                                    '<input name="surname" type="text" id="surname" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="email">email</label>' +
+                                    '<input name="eamil" type="text" id="email" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="activestatus">active status</label>' +
+                                    '<input name="activestatus" type="text" id="activestatus" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="store_address">store address</label>' +
+                                    '<input name="store_address" type="text" id="store_address" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="country">country</label>' +
+                                    '<input name="country" type="text" id="country" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="city">city</label>' +
+                                    '<input name="city" type="text" id="city" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="district">district</label>' +
+                                    '<input name="district" type="text" id="district" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="postal_code">postal code</label>' +
+                                    '<input name="postal_code" type="text" id="postal_code" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="phone">phone</label>' +
+                                    '<input name="phone" type="text" id="phone" required/>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="address">address</label>' +
+                                    '<textarea name="address" id="address" required></textarea>' +
+                                '</div>' +
+                                '<div>' +
+                                    '<label for="address2">address 2</label>' +
+                                    '<textarea name="address2" id="address2" required></textarea>' +
+                                '</div>' +
+                            '</div>' +
+                            '<h4></h4>' +
+                            '<input type="submit" onmouseup="addNewClientToDatabase()" value="Add client to database">';
+}
+
+const selectEmailStructure = function(){
+    const addclientform = document.querySelector(".add-client-form");
+    addclientform.innerHTML = '<div class="add-client-form-inputs-container">' +
+                                '<div>' +
+                                    '<label for="emailbody">Email body</label>' +
+                                    '<textarea name="emailbody" id="emailbody" required></textarea>' +
+                                '</div>' +
+                            '</div>' +
+                            '<h4></h4>' +
+                            '<input type="submit" onmouseup="sendEmailToAllClients()" value="Send email to clients">';
+}
+
+const sendEmailToAllClients = function(){
+    const emailbody = document.getElementById("emailbody");
+    const errorContext = document.querySelector(".add-client-form h4");
+    if(emailbody.value === ""){
+        errorContext.innerHTML = "Email body cannot be empty";
+        return;
+    }
+    JAVA__READABLE__TEXT = "{\"emailbody\":\"" + emailbody.value + "\"}";
+    closeAddClient();
+    InterfaceAPIOBJ.sendEmailToAllClients();
+}
+
 const selectNotificationTabUI = function(){
     const mainApp = document.querySelector(".main-app");
     mainApp.innerHTML = '<div class="notifications-tab-ui">' +
@@ -394,7 +474,7 @@ const selectNotificationTabUI = function(){
                                     '<img src="assets/search.svg" alt="search-client-btn"/>' +
                                 '</div>' +
                                 '<div class="add-client-btn" onmouseup="openAddClient()">' +
-                                    '<img src="assets/add-data.svg" alt="add-client-btn"/>' +
+                                    '<img src="assets/options.svg" alt="add-client-btn"/>' +
                                 '</div>' +
                             '</div>' +
                             '<div class="notifications-tab-results"></div>' +
@@ -403,58 +483,10 @@ const selectNotificationTabUI = function(){
                                     '<img src="assets/close-add-film.svg" alt="close-add-client-btn"/>' +
                                 '</div>' +
                                 '<div class="add-client-form">' +
-                                    '<div class="add-client-form-inputs-container">' +
-                                        '<div>' +
-                                            '<label for="name">name</label>' +
-                                            '<input name="name" type="text" id="name" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="surname">surname</label>' +
-                                            '<input name="surname" type="text" id="surname" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="email">email</label>' +
-                                            '<input name="eamil" type="text" id="email" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="activestatus">active status</label>' +
-                                            '<input name="activestatus" type="text" id="activestatus" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="store_address">store address</label>' +
-                                            '<input name="store_address" type="text" id="store_address" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="country">country</label>' +
-                                            '<input name="country" type="text" id="country" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="city">city</label>' +
-                                            '<input name="city" type="text" id="city" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="district">district</label>' +
-                                            '<input name="district" type="text" id="district" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="postal_code">postal code</label>' +
-                                            '<input name="postal_code" type="text" id="postal_code" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="phone">phone</label>' +
-                                            '<input name="phone" type="text" id="phone" required/>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="address">address</label>' +
-                                            '<textarea name="address" id="address" required></textarea>' +
-                                        '</div>' +
-                                        '<div>' +
-                                            '<label for="address2">address 2</label>' +
-                                            '<textarea name="address2" id="address2" required></textarea>' +
-                                        '</div>' +
+                                    '<div class="client-options-selector">' +
+                                        '<div class="send-Email-To-All-Clients" onmouseup="selectEmailStructure()">Send notifications</div>' +
+                                        '<div class="select-Add-New-Client" onmouseup="selectAddNewClient()">Add new client</div>' +
                                     '</div>' +
-                                    '<h4></h4>' +
-                                    '<input type="submit" onmouseup="addNewClientToDatabase()" value="Add client to database">' +
                                 '</div>' +
                             '</div>' +
                             '<div class="notifications-tab-edit-client-dialogue">' +
@@ -755,6 +787,12 @@ const openAddClient = function(){
 const closeAddClient = function(){
     if(document.querySelector(".notifications-tab-add-client-dialogue"))
         document.querySelector(".notifications-tab-add-client-dialogue").style.display = "none";
+    
+    const addclientform = document.querySelector(".add-client-form");
+    addclientform.innerHTML = '<div class="client-options-selector">' +
+                                    '<div class="send-Email-To-All-Clients" onmouseup="selectEmailStructure()">Send notifications</div>' +
+                                    '<div class="select-Add-New-Client" onmouseup="selectAddNewClient()">Add new client</div>' +
+                                '</div>';
 }
 
 const openEditClient = function(id){

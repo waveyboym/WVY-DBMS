@@ -1160,6 +1160,15 @@ NOTIFICATIONS     U    I
     overflow-y: auto;
 }
 
+.client-options-selector{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .add-client-form-inputs-container, .edit-client-form-inputs-container{display: flex; justify-content: space-between; flex-wrap: wrap;}
 
 .add-client-form-inputs-container div, .edit-client-form-inputs-container div
@@ -1194,6 +1203,8 @@ NOTIFICATIONS     U    I
     height: 100px;
 }
 
+.add-client-form-inputs-container div #emailbody{height: 150px;}
+
 .add-client-form h4, .edit-client-form h4{
     font-size: 14px; 
     text-align: center;
@@ -1203,7 +1214,7 @@ NOTIFICATIONS     U    I
     user-select: text;
 }
 
-.add-client-form input[type="submit"], .edit-client-form input[type="submit"]{
+.add-client-form input[type="submit"], .edit-client-form input[type="submit"], .send-Email-To-All-Clients, .select-Add-New-Client{
     background: var(--white-1000);
     color: var(--black-1000);
     cursor: pointer;
@@ -1217,9 +1228,29 @@ NOTIFICATIONS     U    I
     transition: transform 0.3s ease-in-out;
 }
 
-.add-client-form input[type="submit"]:hover, .edit-client-form input[type="submit"]:hover{transform: scale(1.03);}
+.send-Email-To-All-Clients{
+    margin-top: 0px;
+    margin-bottom: 20px;
+}
 
-.add-client-form input[type="submit"]:active, .edit-client-form input[type="submit"]:active{transform: scale(0.97);}
+.select-Add-New-Client, .send-Email-To-All-Clients{
+    margin-left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.add-client-form input[type="submit"]:hover, .edit-client-form input[type="submit"]:hover,
+.send-Email-To-All-Clients:hover, .select-Add-New-Client:hover
+{
+    transform: scale(1.03);
+}
+
+.add-client-form input[type="submit"]:active, .edit-client-form input[type="submit"]:active,
+.send-Email-To-All-Clients:active, .select-Add-New-Client:active
+{
+    transform: scale(0.97);
+}
 
 .dropped-rental-sub-headers{display: flex; height: 30px; width: 721px;}
 
